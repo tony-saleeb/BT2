@@ -242,7 +242,7 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                 SizedBox(height: 10.h),
                 Expanded(
                   child: SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(), // Prevents actual scrolling but allows overflow
+                    physics: const NeverScrollableScrollPhysics(), // Prevents actual scrolling but allows overflow
                     clipBehavior: Clip.none, // Ensures no clipping happens
                     child: Transform(
                     // No transform effects to ensure perfect balance
