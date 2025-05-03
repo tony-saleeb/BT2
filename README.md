@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="assets/bt2.svg" alt="Numerical Analysis App Logo" width="200">
+</div>
+
 # Numerical Analysis App
 
 A comprehensive Flutter mobile application focused on numerical analysis methods, designed to help users understand and apply various numerical algorithms.
