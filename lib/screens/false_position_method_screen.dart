@@ -3682,10 +3682,136 @@ class FunctionGraphPainter extends CustomPainter {
     // Define the coordinate transformation
     final scale = width / 10; // 10 units in x direction
     
-    // Draw function
-    final paint = Paint()
+    // Draw background grid
+    _drawGrid(canvas, size, center, scale);
+    
+    // Draw axes with labels
+    _drawAxes(canvas, size, center, scale);
+    
+    // Draw function graph
+    _drawFunction(canvas, size, center, scale);
+  }
+  
+  void _drawGrid(Canvas canvas, Size size, Offset center, double scale) {
+    final gridPaint = Paint()
+      ..color = colorScheme.primary.withOpacity(0.1)
+      ..strokeWidth = 0.5;
+    
+    // Vertical lines
+    for (int i = -5; i <= 5; i++) {
+      final x = center.dx + i * scale;
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
+    }
+    
+    // Horizontal lines
+    for (int i = -5; i <= 5; i++) {
+      final y = center.dy - i * scale / 2;
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
+    }
+  }
+  
+  void _drawAxes(Canvas canvas, Size size, Offset center, double scale) {
+    final axisPaint = Paint()
+      ..color = colorScheme.primary.withOpacity(0.5)
+      ..strokeWidth = 1.5;
+    
+    // X-axis
+    canvas.drawLine(
+      Offset(0, center.dy),
+      Offset(size.width, center.dy),
+      axisPaint,
+    );
+    
+    // Y-axis
+    canvas.drawLine(
+      Offset(center.dx, 0),
+      Offset(center.dx, size.height),
+      axisPaint,
+    );
+    
+    try {
+      // Draw tick marks and labels on x-axis
+      final textStyle = TextStyle(
+        color: colorScheme.primary.withOpacity(0.7),
+        fontSize: 10,
+        fontWeight: FontWeight.w500,
+      );
+      
+      for (int i = -4; i <= 4; i += 2) {
+        if (i == 0) continue; // Skip origin
+        
+        final x = center.dx + i * scale;
+        // Draw tick
+        canvas.drawLine(
+          Offset(x, center.dy - 4),
+          Offset(x, center.dy + 4),
+          axisPaint,
+        );
+        
+        // Draw label
+        final textSpan = TextSpan(text: i.toString(), style: textStyle);
+        final textPainter = TextPainter(
+          text: textSpan,
+          textDirection: TextDirection.ltr,
+          textAlign: TextAlign.center,
+        );
+        textPainter.layout();
+        textPainter.paint(
+          canvas,
+          Offset(x - textPainter.width / 2, center.dy + 8),
+        );
+      }
+      
+      // Draw tick marks and labels on y-axis
+      for (int i = -2; i <= 2; i++) {
+        if (i == 0) continue; // Skip origin
+        
+        final y = center.dy - i * scale / 2;
+        // Draw tick
+        canvas.drawLine(
+          Offset(center.dx - 4, y),
+          Offset(center.dx + 4, y),
+          axisPaint,
+        );
+        
+        // Draw label
+        final textSpan = TextSpan(text: i.toString(), style: textStyle);
+        final textPainter = TextPainter(
+          text: textSpan,
+          textDirection: TextDirection.ltr,
+          textAlign: TextAlign.right,
+        );
+        textPainter.layout();
+        textPainter.paint(
+          canvas,
+          Offset(center.dx - textPainter.width - 8, y - textPainter.height / 2),
+        );
+      }
+      
+      // Draw origin label
+      final originTextSpan = TextSpan(text: "0", style: textStyle);
+      final originTextPainter = TextPainter(
+        text: originTextSpan,
+        textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
+      );
+      originTextPainter.layout();
+      originTextPainter.paint(
+        canvas,
+        Offset(center.dx - originTextPainter.width - 8, center.dy + 8),
+      );
+    } catch (e) {
+      // Skip labels if there's an error
+      debugPrint('Error drawing axis labels: $e');
+    }
+  }
+  
+  void _drawFunction(Canvas canvas, Size size, Offset center, double scale) {
+    if (terms.isEmpty) return;
+    
+    final functionPaint = Paint()
       ..color = colorScheme.secondary
-      ..strokeWidth = 1.5  // Reduced stroke width for a thinner line
+      ..strokeWidth = 1.5
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
       ..style = PaintingStyle.stroke;
@@ -3734,7 +3860,18 @@ class FunctionGraphPainter extends CustomPainter {
     }
     
     // Draw the function line
-    canvas.drawPath(path, paint);
+    canvas.drawPath(path, functionPaint);
+    
+    // Draw a shadow for better visibility
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = colorScheme.secondary.withOpacity(0.2)
+        ..strokeWidth = 4
+        ..strokeCap = StrokeCap.round
+        ..style = PaintingStyle.stroke
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+    );
     
     // Draw a single larger dot at the root point
     if (rootPoint != null) {
@@ -3755,7 +3892,7 @@ class FunctionGraphPainter extends CustomPainter {
   }
   
   @override
-  bool shouldRepaint(FunctionGraphPainter oldDelegate) {
+  bool shouldRepaint(covariant FunctionGraphPainter oldDelegate) {
     return oldDelegate.terms != terms;
   }
 } 
