@@ -233,7 +233,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                         decoration: BoxDecoration(
                           color: color,
                             shape: BoxShape.circle, // Only circles for simplicity
-                          ),
+                        ),
                       ),
                     ),
                   );
