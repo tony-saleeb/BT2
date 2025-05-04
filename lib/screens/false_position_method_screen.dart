@@ -3784,11 +3784,11 @@ class FunctionGraphPainter extends CustomPainter {
         textPainter.layout();
         textPainter.paint(
           canvas,
-          Offset(center.dx - textPainter.width - 8, y - textPainter.height / 2),
+          Offset(center.dx - textPainter.width - 4, y - textPainter.height / 2),
         );
       }
       
-      // Draw origin label
+      // Draw origin label (0)
       final originTextSpan = TextSpan(text: "0", style: textStyle);
       final originTextPainter = TextPainter(
         text: originTextSpan,
@@ -3798,7 +3798,7 @@ class FunctionGraphPainter extends CustomPainter {
       originTextPainter.layout();
       originTextPainter.paint(
         canvas,
-        Offset(center.dx - originTextPainter.width - 8, center.dy + 8),
+        Offset(center.dx + 6, center.dy + 6),
       );
     } catch (e) {
       // Skip labels if there's an error
