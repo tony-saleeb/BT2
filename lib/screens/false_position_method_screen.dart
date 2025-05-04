@@ -3762,11 +3762,11 @@ class FunctionGraphPainter extends CustomPainter {
         );
       }
       
-      // Draw tick marks and labels on y-axis
-      for (int i = -2; i <= 2; i++) {
+      // Draw tick marks and labels on y-axis - using larger spacing
+      for (int i = -4; i <= 4; i += 2) {
         if (i == 0) continue; // Skip origin
         
-        final y = center.dy - i * scale / 2;
+        final y = center.dy - i * scale / 4; // Divide by 4 instead of 2 for better spacing
         // Draw tick
         canvas.drawLine(
           Offset(center.dx - 4, y),
@@ -3784,7 +3784,7 @@ class FunctionGraphPainter extends CustomPainter {
         textPainter.layout();
         textPainter.paint(
           canvas,
-          Offset(center.dx - textPainter.width - 4, y - textPainter.height / 2),
+          Offset(center.dx - textPainter.width - 8, y - textPainter.height / 2),
         );
       }
       
