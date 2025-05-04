@@ -110,7 +110,7 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
   
   // Map to store chapter animation controllers
   final Map<int, AnimationController> _chapterControllers = {};
-
+  
   late final Animation<double> _scaleAnimation = Tween<double>(
     begin: 0.6,
     end: 1.0,
@@ -244,7 +244,7 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                   child: SingleChildScrollView(
                     physics: const NeverScrollableScrollPhysics(), // Prevents actual scrolling but allows overflow
                     clipBehavior: Clip.none, // Ensures no clipping happens
-                    child: Transform(
+                  child: Transform(
                     // No transform effects to ensure perfect balance
                     transform: Matrix4.identity(),
                     alignment: Alignment.center,
@@ -267,7 +267,7 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                             // Chapter selection cards
                             Center(
                               child: Padding(
-                                padding: EdgeInsets.only(top: 15.h),
+                                padding: EdgeInsets.only(top: 100.h),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
@@ -433,23 +433,23 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
           children: [
             // 3D morphing card
             Container(
-              decoration: BoxDecoration(
+      decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(28),
-                gradient: LinearGradient(
+        gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
+          colors: [
                     Color(gradientColors[0]).withOpacity(isDark ? 0.6 : 0.8),
                     Color(gradientColors[1]).withOpacity(isDark ? 0.6 : 0.8),
-                  ],
-                ),
-                boxShadow: [
+          ],
+        ),
+        boxShadow: [
                   // Ambient shadow
-                  BoxShadow(
+          BoxShadow(
                     color: colorScheme.shadow.withOpacity(0.12),
                     blurRadius: 12,
                     offset: Offset(0, 6), // Balanced shadow
-                    spreadRadius: 0,
+            spreadRadius: 0,
                   ),
                   // Glow effect
                   if (isSelected)
@@ -458,9 +458,9 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                       blurRadius: 25,
                       spreadRadius: 1,
                       offset: Offset(0, 8), // More balanced shadow offset
-                    ),
-                ],
-              ),
+          ),
+        ],
+      ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(28),
                 child: Stack(
@@ -500,11 +500,11 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                             },
                             blendMode: BlendMode.srcATop,
                             child: Container(
-                              color: Colors.transparent,
+        color: Colors.transparent,
                             ),
-                          ),
-                        );
-                      },
+              ),
+            );
+          },
                     ),
                     
                     // Content
@@ -533,23 +533,23 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                                     ),
                                   ],
                                 ),
-                                child: Row(
+            child: Row(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
+              children: [
+                Text(
                                       "CHAPTER",
                                       style: TextStyle(
                                         fontSize: 11.sp,
                                         fontWeight: FontWeight.w800,
-                                        color: Colors.white,
+                    color: Colors.white,
                                         letterSpacing: 1,
-                                      ),
-                                    ),
+                  ),
+                ),
                                     SizedBox(width: 5.w),
-                                    Container(
+                Container(
                                       width: isSelected ? 24.w : 22.w,
                                       height: isSelected ? 24.w : 22.w,
-                                      decoration: BoxDecoration(
+                  decoration: BoxDecoration(
                                         color: Colors.white.withOpacity(0.9),
                                         shape: BoxShape.circle,
                                         boxShadow: [
@@ -569,11 +569,11 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                                             color: Color(gradientColors[0]),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                  ),
+                ),
+              ],
+            ),
+          ),
                               
                               // Selection indicator
                               if (isSelected)
@@ -636,9 +636,9 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
+                      ],
+              ),
+            ),
                     
 
                       
@@ -692,13 +692,13 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                                           builder: (context, child) {
                                             return Transform.translate(
                                               offset: Offset(3 * math.sin(controller.value * 2 * math.pi), 0),
-                                              child: Icon(
+                              child: Icon(
                                                 Icons.arrow_forward_rounded,
                                                 color: Colors.white,
                                                 size: 14.w,
-                                              ),
-                                            );
-                                          },
+                              ),
+                            );
+                          },
                                         ),
                                       ],
                                     ),
@@ -709,7 +709,7 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                           },
                         ),
                       ),
-                  ],
+                    ],
                 ),
               ),
             ),
