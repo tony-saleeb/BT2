@@ -1745,224 +1745,275 @@ class _NewtonMethodScreenState extends State<NewtonMethodScreen> with SingleTick
                                     insetPadding: EdgeInsets.zero,
                                     child: Stack(
                                       children: [
-                                        // Blurred background
+                                        // Enhanced blurred background with animation
                                         Positioned.fill(
                                           child: BackdropFilter(
                                             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                            child: Container(
-                                              color: Colors.black.withOpacity(0.1),
+                                            child: TweenAnimationBuilder<double>(
+                                              duration: const Duration(milliseconds: 300),
+                                              tween: Tween<double>(begin: 0, end: 0.2),
+                                              builder: (context, value, child) {
+                                                return Container(
+                                                  color: Colors.black.withOpacity(value),
+                                                );
+                                              },
                                             ),
                                           ),
                                         ),
-                                        // Dialog content
+                                        // Dialog content with enhanced glass effect
                                         Center(
-                                          child: Container(
-                                            width: 400,
-                                            margin: const EdgeInsets.symmetric(horizontal: 40),
-                                            decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
-                                                stops: const [0.0, 0.35, 0.7, 1.0],
-                                                colors: [
-                                                  const Color(0xFFB71C1C).withOpacity(0.8),  // Dark red
-                                                  const Color(0xFF960000).withOpacity(0.85),  // Darker red
-                                                  const Color(0xFF7F0000).withOpacity(0.9),  // Very dark red
-                                                  const Color(0xFF550000).withOpacity(0.95),  // Extremely dark red
-                                                ],
-                                              ),
-                                              borderRadius: BorderRadius.circular(28),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: const Color(0xFFB71C1C).withOpacity(0.3),
-                                                  blurRadius: 40,
-                                                  offset: const Offset(0, 20),
-                                                  spreadRadius: -12,
+                                          child: TweenAnimationBuilder<double>(
+                                            duration: const Duration(milliseconds: 400),
+                                            curve: Curves.easeOutQuint,
+                                            tween: Tween<double>(begin: 0.9, end: 1.0),
+                                            builder: (context, scale, child) {
+                                              return Transform.scale(
+                                                scale: scale,
+                                                child: child,
+                                              );
+                                            },
+                                            child: Container(
+                                              width: 400,
+                                              margin: const EdgeInsets.symmetric(horizontal: 40),
+                                              decoration: BoxDecoration(
+                                                // Enhanced gradient with more layers
+                                                gradient: LinearGradient(
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
+                                                  stops: const [0.0, 0.35, 0.7, 1.0],
+                                                  colors: [
+                                                    const Color(0xFFC62828).withOpacity(0.8),  // Brighter red
+                                                    const Color(0xFFB71C1C).withOpacity(0.85),  // Dark red
+                                                    const Color(0xFF960000).withOpacity(0.9),  // Darker red
+                                                    const Color(0xFF7F0000).withOpacity(0.95),  // Very dark red
+                                                  ],
                                                 ),
-                                              ],
-                                              border: Border.all(
-                                                color: Colors.white.withOpacity(0.2),
-                                                width: 2,
-                                              ),
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(28),
-                                              child: BackdropFilter(
-                                                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                      begin: Alignment.topCenter,
-                                                      end: Alignment.bottomCenter,
-                                                      stops: const [0.0, 0.3, 0.6, 1.0],
-                                                      colors: [
-                                                        Colors.white.withOpacity(0.3),
-                                                        Colors.white.withOpacity(0.15),
-                                                        Colors.white.withOpacity(0.05),
-                                                        Colors.white.withOpacity(0.0),
-                                                      ],
-                                                    ),
+                                                borderRadius: BorderRadius.circular(32),
+                                                // Enhanced shadow for depth
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: const Color(0xFFB71C1C).withOpacity(0.3),
+                                                    blurRadius: 40,
+                                                    offset: const Offset(0, 20),
+                                                    spreadRadius: -12,
                                                   ),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(32),
-                                                    child: Column(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        Container(
-                                                          padding: const EdgeInsets.all(20),
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.white.withOpacity(0.2),
-                                                            shape: BoxShape.circle,
-                                                            border: Border.all(
-                                                              color: Colors.white.withOpacity(0.5),
-                                                              width: 2,
-                                                            ),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors.black.withOpacity(0.2),
-                                                                blurRadius: 16,
-                                                                offset: const Offset(0, 8),
+                                                  BoxShadow(
+                                                    color: Colors.black.withOpacity(0.1),
+                                                    blurRadius: 10,
+                                                    offset: const Offset(0, 5),
+                                                    spreadRadius: 0,
+                                                  ),
+                                                ],
+                                                // Enhanced border for glass effect
+                                                border: Border.all(
+                                                  color: Colors.white.withOpacity(0.3),
+                                                  width: 2,
+                                                ),
+                                              ),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(32),
+                                                // Enhanced blur for glass effect
+                                                child: BackdropFilter(
+                                                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      // Enhanced gradient overlay for light effect
+                                                      gradient: LinearGradient(
+                                                        begin: Alignment.topCenter,
+                                                        end: Alignment.bottomCenter,
+                                                        stops: const [0.0, 0.3, 0.6, 1.0],
+                                                        colors: [
+                                                          Colors.white.withOpacity(0.4),
+                                                          Colors.white.withOpacity(0.2),
+                                                          Colors.white.withOpacity(0.05),
+                                                          Colors.white.withOpacity(0.0),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(32),
+                                                      child: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          // Enhanced icon container with glow
+                                                          Container(
+                                                            padding: const EdgeInsets.all(20),
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.white.withOpacity(0.2),
+                                                              shape: BoxShape.circle,
+                                                              border: Border.all(
+                                                                color: Colors.white.withOpacity(0.5),
+                                                                width: 2,
                                                               ),
-                                                            ],
-                                                          ),
-                                                          child: const Icon(
-                                                            Icons.delete_rounded,
-                                                            color: Colors.white,
-                                                            size: 36,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 24),
-                                                        Text(
-                                                          'Delete Function',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight: FontWeight.w700,
-                                                            fontSize: 28,
-                                                            letterSpacing: 0.5,
-                                                            shadows: [
-                                                              Shadow(
-                                                                color: Colors.black.withOpacity(0.3),
-                                                                offset: const Offset(0, 2),
-                                                                blurRadius: 4,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 24),
-                                                        Container(
-                                                          padding: const EdgeInsets.symmetric(
-                                                            horizontal: 24,
-                                                            vertical: 16,
-                                                          ),
-                                                          decoration: BoxDecoration(
-                                                            gradient: LinearGradient(
-                                                              begin: Alignment.topLeft,
-                                                              end: Alignment.bottomRight,
-                                                              colors: [
-                                                                Colors.black.withOpacity(0.4),
-                                                                Colors.black.withOpacity(0.2),
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors.white.withOpacity(0.15),
+                                                                  blurRadius: 20,
+                                                                  spreadRadius: 2,
+                                                                ),
+                                                                BoxShadow(
+                                                                  color: Colors.black.withOpacity(0.2),
+                                                                  blurRadius: 16,
+                                                                  offset: const Offset(0, 8),
+                                                                ),
                                                               ],
                                                             ),
-                                                            borderRadius: BorderRadius.circular(20),
-                                                            border: Border.all(
-                                                              color: Colors.white.withOpacity(0.3),
-                                                              width: 2,
+                                                            child: const Icon(
+                                                              Icons.delete_rounded,
+                                                              color: Colors.white,
+                                                              size: 36,
                                                             ),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors.black.withOpacity(0.2),
-                                                                blurRadius: 8,
-                                                                offset: const Offset(0, 4),
-                                                              ),
-                                                            ],
                                                           ),
-                                                          child: SingleChildScrollView(
-                                                            scrollDirection: Axis.horizontal,
+                                                          const SizedBox(height: 24),
+                                                          // Enhanced title with glow effect
+                                                          ShaderMask(
+                                                            shaderCallback: (Rect bounds) {
+                                                              return LinearGradient(
+                                                                begin: Alignment.topLeft,
+                                                                end: Alignment.bottomRight,
+                                                                colors: [
+                                                                  Colors.white,
+                                                                  Colors.white.withOpacity(0.9),
+                                                                ],
+                                                              ).createShader(bounds);
+                                                            },
                                                             child: Text(
-                                                              'f(x) = ${item['function']}',
-                                                              style: const TextStyle(
+                                                              'Delete Function',
+                                                              style: TextStyle(
                                                                 color: Colors.white,
-                                                                fontWeight: FontWeight.w600,
-                                                                fontSize: 18,
-                                                                height: 1.5,
+                                                                fontWeight: FontWeight.w700,
+                                                                fontSize: 28,
                                                                 letterSpacing: 0.5,
+                                                                shadows: [
+                                                                  Shadow(
+                                                                    color: Colors.black.withOpacity(0.3),
+                                                                    offset: const Offset(0, 2),
+                                                                    blurRadius: 4,
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(height: 24),
-                                                        Text(
-                                                          'Are you sure you want to delete this function?\nThis action cannot be undone.',
-                                                          textAlign: TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Colors.white.withOpacity(0.9),
-                                                            fontSize: 16,
-                                                            height: 1.6,
-                                                            letterSpacing: 0.3,
-                                                            shadows: [
-                                                              Shadow(
-                                                                color: Colors.black.withOpacity(0.2),
-                                                                offset: const Offset(0, 1),
-                                                                blurRadius: 2,
+                                                          const SizedBox(height: 24),
+                                                          // Enhanced function preview container
+                                                          Container(
+                                                            padding: const EdgeInsets.symmetric(
+                                                              horizontal: 24,
+                                                              vertical: 16,
+                                                            ),
+                                                            decoration: BoxDecoration(
+                                                              // Enhanced glass effect with gradient
+                                                              gradient: LinearGradient(
+                                                                begin: Alignment.topLeft,
+                                                                end: Alignment.bottomRight,
+                                                                colors: [
+                                                                  Colors.black.withOpacity(0.3),
+                                                                  Colors.black.withOpacity(0.1),
+                                                                ],
                                                               ),
-                                                            ],
+                                                              borderRadius: BorderRadius.circular(24),
+                                                              border: Border.all(
+                                                                color: Colors.white.withOpacity(0.3),
+                                                                width: 2,
+                                                              ),
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors.black.withOpacity(0.2),
+                                                                  blurRadius: 8,
+                                                                  offset: const Offset(0, 4),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            child: SingleChildScrollView(
+                                                              scrollDirection: Axis.horizontal,
+                                                              child: Text(
+                                                                'f(x) = ${item['function']}',
+                                                                style: const TextStyle(
+                                                                  color: Colors.white,
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 18,
+                                                                  height: 1.5,
+                                                                  letterSpacing: 0.5,
+                                                                ),
+                                                              ),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(height: 32),
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: TextButton(
-                                                                onPressed: () => Navigator.of(context).pop(false),
-                                                                style: TextButton.styleFrom(
-                                                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                                                  backgroundColor: Colors.white.withOpacity(0.2),
-                                                                  shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(16),
-                                                                    side: BorderSide(
-                                                                      color: Colors.white.withOpacity(0.3),
-                                                                      width: 2,
+                                                          const SizedBox(height: 24),
+                                                          // Enhanced message text with glow
+                                                          Text(
+                                                            'Are you sure you want to delete this function?\nThis action cannot be undone.',
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              color: Colors.white.withOpacity(0.9),
+                                                              fontSize: 16,
+                                                              height: 1.6,
+                                                              letterSpacing: 0.3,
+                                                              shadows: [
+                                                                Shadow(
+                                                                  color: Colors.black.withOpacity(0.2),
+                                                                  offset: const Offset(0, 1),
+                                                                  blurRadius: 2,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 32),
+                                                          // Enhanced buttons with better glass effect
+                                                          Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child: TextButton(
+                                                                  onPressed: () => Navigator.of(context).pop(false),
+                                                                  style: TextButton.styleFrom(
+                                                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                                                    backgroundColor: Colors.white.withOpacity(0.2),
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(20),
+                                                                      side: BorderSide(
+                                                                        color: Colors.white.withOpacity(0.4),
+                                                                        width: 2,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  child: const Text(
+                                                                    'CANCEL',
+                                                                    style: TextStyle(
+                                                                      color: Colors.white,
+                                                                      fontWeight: FontWeight.w600,
+                                                                      letterSpacing: 1.2,
+                                                                      fontSize: 15,
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                child: const Text(
-                                                                  'CANCEL',
-                                                                  style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontWeight: FontWeight.w600,
-                                                                    letterSpacing: 1.2,
-                                                                    fontSize: 15,
+                                                              ),
+                                                              const SizedBox(width: 16),
+                                                              Expanded(
+                                                                child: ElevatedButton(
+                                                                  onPressed: () => Navigator.of(context).pop(true),
+                                                                  style: ElevatedButton.styleFrom(
+                                                                    backgroundColor: Colors.white,
+                                                                    foregroundColor: const Color(0xFFFF1744),
+                                                                    elevation: 0,
+                                                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(20),
+                                                                    ),
+                                                                    shadowColor: Colors.black.withOpacity(0.3),
+                                                                  ),
+                                                                  child: const Text(
+                                                                    'DELETE',
+                                                                    style: TextStyle(
+                                                                      fontWeight: FontWeight.w600,
+                                                                      letterSpacing: 1.2,
+                                                                      fontSize: 15,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                            const SizedBox(width: 16),
-                                                            Expanded(
-                                                              child: ElevatedButton(
-                                                                onPressed: () => Navigator.of(context).pop(true),
-                                                                style: ElevatedButton.styleFrom(
-                                                                  backgroundColor: Colors.white,
-                                                                  foregroundColor: const Color(0xFFFF1744),
-                                                                  elevation: 0,
-                                                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                                                  shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(16),
-                                                                  ),
-                                                                  shadowColor: Colors.black.withOpacity(0.3),
-                                                                ),
-                                                                child: const Text(
-                                                                  'DELETE',
-                                                                  style: TextStyle(
-                                                                    fontWeight: FontWeight.w600,
-                                                                    letterSpacing: 1.2,
-                                                                    fontSize: 15,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),

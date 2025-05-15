@@ -1674,8 +1674,8 @@ Marking id:group_divider:2131230821 used because it matches string pool constant
 Marking attr:tooltipForegroundColor:2130903398 used because it matches string pool constant tooltip
 Marking attr:tooltipFrameBackground:2130903399 used because it matches string pool constant tooltip
 Marking attr:tooltipText:2130903400 used because it matches string pool constant tooltip
-Marking color:tooltip_background_dark:2131034199 used because it matches string pool constant tooltip
-Marking color:tooltip_background_light:2131034200 used because it matches string pool constant tooltip
+Marking color:tooltip_background_dark:2131034200 used because it matches string pool constant tooltip
+Marking color:tooltip_background_light:2131034201 used because it matches string pool constant tooltip
 Marking dimen:tooltip_corner_radius:2131099770 used because it matches string pool constant tooltip
 Marking dimen:tooltip_horizontal_padding:2131099771 used because it matches string pool constant tooltip
 Marking dimen:tooltip_margin:2131099772 used because it matches string pool constant tooltip
@@ -2386,6 +2386,7 @@ Marking color:error_color_material_light:2131034159 used because it matches stri
 @color/foreground_material_light : reachable=false
 @color/highlighted_text_material_dark : reachable=false
 @color/highlighted_text_material_light : reachable=false
+@color/ic_launcher_background : reachable=false
 @color/material_blue_grey_800 : reachable=false
 @color/material_blue_grey_900 : reachable=false
 @color/material_blue_grey_950 : reachable=false
@@ -3231,6 +3232,12 @@ Marking color:error_color_material_light:2131034159 used because it matches stri
     @attr/dropdownListPreferredItemHeight
     @attr/spinnerDropDownItemStyle
 @mipmap/ic_launcher : reachable=true
+    @color/ic_launcher_background
+    @mipmap/ic_launcher_foreground
+@mipmap/ic_launcher_foreground : reachable=false
+@mipmap/ic_launcher_round : reachable=true
+    @color/ic_launcher_background
+    @mipmap/ic_launcher_foreground
 @string/abc_action_bar_home_description : reachable=false
 @string/abc_action_bar_up_description : reachable=true
 @string/abc_action_menu_overflow_description : reachable=false
@@ -5018,8 +5025,8 @@ The root reachable resources are:
  color:androidx_core_secondary_text_default_material_light:2131034139
  color:error_color_material_dark:2131034158
  color:error_color_material_light:2131034159
- color:tooltip_background_dark:2131034199
- color:tooltip_background_light:2131034200
+ color:tooltip_background_dark:2131034200
+ color:tooltip_background_light:2131034201
  dimen:abc_cascading_menus_min_smallest_width:2131099670
  dimen:abc_config_prefDialogWidth:2131099671
  dimen:abc_dropdownitem_icon_width:2131099689
@@ -5225,6 +5232,7 @@ The root reachable resources are:
  layout:abc_tooltip:2131427355
  layout:preference:2131427367
  mipmap:ic_launcher:2131492864
+ mipmap:ic_launcher_round:2131492866
  string:abc_action_bar_up_description:2131558401
  string:abc_menu_alt_shortcut_label:2131558408
  string:abc_menu_ctrl_shortcut_label:2131558409
@@ -5306,39 +5314,39 @@ Unused resources are:
  color:foreground_material_light:2131034161
  color:highlighted_text_material_dark:2131034162
  color:highlighted_text_material_light:2131034163
- color:material_blue_grey_800:2131034164
- color:material_blue_grey_900:2131034165
- color:material_blue_grey_950:2131034166
- color:material_grey_100:2131034169
- color:material_grey_300:2131034170
- color:material_grey_50:2131034171
- color:material_grey_600:2131034172
- color:material_grey_800:2131034173
- color:material_grey_850:2131034174
- color:material_grey_900:2131034175
- color:notification_action_color_filter:2131034176
- color:notification_icon_bg_color:2131034177
- color:preference_fallback_accent_color:2131034178
- color:primary_dark_material_dark:2131034179
- color:primary_dark_material_light:2131034180
- color:primary_material_dark:2131034181
- color:primary_material_light:2131034182
- color:primary_text_default_material_dark:2131034183
- color:primary_text_default_material_light:2131034184
- color:primary_text_disabled_material_dark:2131034185
- color:primary_text_disabled_material_light:2131034186
- color:ripple_material_dark:2131034187
- color:ripple_material_light:2131034188
- color:secondary_text_default_material_dark:2131034189
- color:secondary_text_default_material_light:2131034190
- color:secondary_text_disabled_material_dark:2131034191
- color:secondary_text_disabled_material_light:2131034192
- color:switch_thumb_disabled_material_dark:2131034193
- color:switch_thumb_disabled_material_light:2131034194
- color:switch_thumb_material_dark:2131034195
- color:switch_thumb_material_light:2131034196
- color:switch_thumb_normal_material_dark:2131034197
- color:switch_thumb_normal_material_light:2131034198
+ color:material_blue_grey_800:2131034165
+ color:material_blue_grey_900:2131034166
+ color:material_blue_grey_950:2131034167
+ color:material_grey_100:2131034170
+ color:material_grey_300:2131034171
+ color:material_grey_50:2131034172
+ color:material_grey_600:2131034173
+ color:material_grey_800:2131034174
+ color:material_grey_850:2131034175
+ color:material_grey_900:2131034176
+ color:notification_action_color_filter:2131034177
+ color:notification_icon_bg_color:2131034178
+ color:preference_fallback_accent_color:2131034179
+ color:primary_dark_material_dark:2131034180
+ color:primary_dark_material_light:2131034181
+ color:primary_material_dark:2131034182
+ color:primary_material_light:2131034183
+ color:primary_text_default_material_dark:2131034184
+ color:primary_text_default_material_light:2131034185
+ color:primary_text_disabled_material_dark:2131034186
+ color:primary_text_disabled_material_light:2131034187
+ color:ripple_material_dark:2131034188
+ color:ripple_material_light:2131034189
+ color:secondary_text_default_material_dark:2131034190
+ color:secondary_text_default_material_light:2131034191
+ color:secondary_text_disabled_material_dark:2131034192
+ color:secondary_text_disabled_material_light:2131034193
+ color:switch_thumb_disabled_material_dark:2131034194
+ color:switch_thumb_disabled_material_light:2131034195
+ color:switch_thumb_material_dark:2131034196
+ color:switch_thumb_material_light:2131034197
+ color:switch_thumb_normal_material_dark:2131034198
+ color:switch_thumb_normal_material_light:2131034199
  dimen:abc_action_bar_content_inset_material:2131099648
  dimen:abc_action_bar_content_inset_with_nav:2131099649
  dimen:abc_action_bar_default_height_material:2131099650

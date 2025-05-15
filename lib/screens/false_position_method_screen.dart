@@ -370,23 +370,69 @@ class _FalsePositionMethodScreenState extends State<FalsePositionMethodScreen> w
                   boxShadow: [
                     BoxShadow(
                       color: colorScheme.primary.withOpacity(0.1),
-                      blurRadius: 24,
-                      offset: const Offset(0, 8),
+                      blurRadius: 32,
+                      offset: const Offset(0, 12),
+                      spreadRadius: -8,
+                    ),
+                    BoxShadow(
+                      color: colorScheme.secondary.withOpacity(0.05),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                      spreadRadius: 0,
                     ),
                   ],
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Padding(
+                    // Header with gradient background (fixed at top)
+                    Container(
                       padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            colorScheme.secondary.withOpacity(0.1),
+                            colorScheme.secondary.withOpacity(0.05),
+                          ],
+                        ),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(32),
+                        ),
+                        border: Border(
+                          bottom: BorderSide(
+                            color: colorScheme.outline.withOpacity(0.2),
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
                       child: Row(
                         children: [
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: colorScheme.secondary.withOpacity(0.1),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  colorScheme.secondary.withOpacity(0.2),
+                                  colorScheme.tertiary.withOpacity(0.2),
+                                ],
+                              ),
                               borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: colorScheme.secondary.withOpacity(0.2),
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: colorScheme.secondary.withOpacity(0.2),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
                             ),
                             child: Icon(
                               Icons.functions_rounded,
@@ -402,7 +448,7 @@ class _FalsePositionMethodScreenState extends State<FalsePositionMethodScreen> w
                                 Text(
                                   'BUILD POLYNOMIAL',
                                   style: TextStyle(
-                                    color: colorScheme.primary,
+                                    color: colorScheme.secondary,
                                     fontWeight: FontWeight.w600,
                                     letterSpacing: 2,
                                     fontSize: 16,
@@ -412,7 +458,7 @@ class _FalsePositionMethodScreenState extends State<FalsePositionMethodScreen> w
                                 Text(
                                   'Craft your function visually',
                                   style: TextStyle(
-                                    color: colorScheme.primary.withOpacity(0.5),
+                                    color: colorScheme.secondary.withOpacity(0.5),
                                     letterSpacing: 0.5,
                                   ),
                                 ),
@@ -423,7 +469,7 @@ class _FalsePositionMethodScreenState extends State<FalsePositionMethodScreen> w
                             onPressed: () => Navigator.pop(context),
                             icon: Icon(
                               Icons.close_rounded,
-                              color: colorScheme.primary.withOpacity(0.5),
+                              color: colorScheme.secondary.withOpacity(0.5),
                             ),
                           ),
                         ],
@@ -1700,224 +1746,326 @@ class _FalsePositionMethodScreenState extends State<FalsePositionMethodScreen> w
                                     insetPadding: EdgeInsets.zero,
                                     child: Stack(
                                       children: [
-                                        // Blurred background
+                                        // Enhanced blurred background with animation
                                         Positioned.fill(
                                           child: BackdropFilter(
-                                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                            child: Container(
-                                              color: Colors.black.withOpacity(0.1),
+                                            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                                            child: TweenAnimationBuilder<double>(
+                                              duration: const Duration(milliseconds: 500),
+                                              curve: Curves.easeOutQuad,
+                                              tween: Tween<double>(begin: 0.0, end: 1.0),
+                                              builder: (context, value, _) {
+                                                return Container(
+                                                  color: Colors.black.withOpacity(0.2 * value),
+                                                );
+                                              },
                                             ),
                                           ),
                                         ),
-                                        // Dialog content
+                                        // Dialog content with enhanced glassmorphism
                                         Center(
-                                          child: Container(
-                                            width: 400,
-                                            margin: const EdgeInsets.symmetric(horizontal: 40),
-                                            decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
-                                                stops: const [0.0, 0.35, 0.7, 1.0],
-                                                colors: [
-                                                  const Color(0xFFB71C1C).withOpacity(0.8),  // Dark red
-                                                  const Color(0xFF960000).withOpacity(0.85),  // Darker red
-                                                  const Color(0xFF7F0000).withOpacity(0.9),  // Very dark red
-                                                  const Color(0xFF550000).withOpacity(0.95),  // Extremely dark red
-                                                ],
-                                              ),
-                                              borderRadius: BorderRadius.circular(28),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: const Color(0xFFB71C1C).withOpacity(0.3),
-                                                  blurRadius: 40,
-                                                  offset: const Offset(0, 20),
-                                                  spreadRadius: -12,
+                                          child: TweenAnimationBuilder<double>(
+                                            duration: const Duration(milliseconds: 600),
+                                            curve: Curves.easeOutQuint,
+                                            tween: Tween<double>(begin: 0.8, end: 1.0),
+                                            builder: (context, scale, child) {
+                                              return Transform.scale(
+                                                scale: scale,
+                                                child: child,
+                                              );
+                                            },
+                                            child: Container(
+                                              width: 400,
+                                              margin: const EdgeInsets.symmetric(horizontal: 40),
+                                              // First layer - outer container with gradients
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
+                                                  stops: const [0.0, 0.35, 0.7, 1.0],
+                                                  colors: [
+                                                    const Color(0xFFB71C1C).withOpacity(0.8),  // Dark red
+                                                    const Color(0xFF960000).withOpacity(0.85),  // Darker red
+                                                    const Color(0xFF7F0000).withOpacity(0.9),  // Very dark red
+                                                    const Color(0xFF550000).withOpacity(0.95),  // Extremely dark red
+                                                  ],
                                                 ),
-                                              ],
-                                              border: Border.all(
-                                                color: Colors.white.withOpacity(0.2),
-                                                width: 2,
-                                              ),
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(28),
-                                              child: BackdropFilter(
-                                                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                      begin: Alignment.topCenter,
-                                                      end: Alignment.bottomCenter,
-                                                      stops: const [0.0, 0.3, 0.6, 1.0],
-                                                      colors: [
-                                                        Colors.white.withOpacity(0.3),
-                                                        Colors.white.withOpacity(0.15),
-                                                        Colors.white.withOpacity(0.05),
-                                                        Colors.white.withOpacity(0.0),
-                                                      ],
-                                                    ),
+                                                borderRadius: BorderRadius.circular(32),
+                                                boxShadow: [
+                                                  // Outer glow
+                                                  BoxShadow(
+                                                    color: const Color(0xFFC62828).withOpacity(0.4),
+                                                    blurRadius: 50,
+                                                    offset: const Offset(0, 25),
+                                                    spreadRadius: -8,
                                                   ),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(32),
-                                                    child: Column(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        Container(
-                                                          padding: const EdgeInsets.all(20),
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.white.withOpacity(0.2),
-                                                            shape: BoxShape.circle,
-                                                            border: Border.all(
-                                                              color: Colors.white.withOpacity(0.5),
-                                                              width: 2,
+                                                  // Inner shadow
+                                                  BoxShadow(
+                                                    color: Colors.black.withOpacity(0.3),
+                                                    blurRadius: 15,
+                                                    offset: const Offset(0, 8),
+                                                    spreadRadius: -3,
+                                                  ),
+                                                ],
+                                                // Enhanced double-border effect
+                                                border: Border.all(
+                                                  color: Colors.white.withOpacity(0.25),
+                                                  width: 2.5,
+                                                ),
+                                              ),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(32),
+                                                // Second layer - apply blur effect
+                                                child: BackdropFilter(
+                                                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                                                  // Third layer - inner container with frosted effect
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      // Pearlescent gradient overlay for glass effect
+                                                      gradient: LinearGradient(
+                                                        begin: Alignment.topCenter,
+                                                        end: Alignment.bottomCenter,
+                                                        stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
+                                                        colors: [
+                                                          Colors.white.withOpacity(0.4),
+                                                          Colors.white.withOpacity(0.2),
+                                                          Colors.white.withOpacity(0.1),
+                                                          Colors.white.withOpacity(0.05),
+                                                          Colors.white.withOpacity(0.0),
+                                                        ],
+                                                      ),
+                                                      // Inner border highlight
+                                                      border: Border(
+                                                        top: BorderSide(
+                                                          color: Colors.white.withOpacity(0.5),
+                                                          width: 0.5,
+                                                        ),
+                                                        left: BorderSide(
+                                                          color: Colors.white.withOpacity(0.3),
+                                                          width: 0.5,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(32),
+                                                      child: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          // Animated icon
+                                                          TweenAnimationBuilder<double>(
+                                                            duration: const Duration(milliseconds: 800),
+                                                            curve: Curves.elasticOut,
+                                                            tween: Tween<double>(begin: 0.5, end: 1.0),
+                                                            builder: (context, iconScale, child) {
+                                                              return Transform.scale(
+                                                                scale: iconScale,
+                                                                child: child,
+                                                              );
+                                                            },
+                                                            child: Container(
+                                                              padding: const EdgeInsets.all(20),
+                                                              decoration: BoxDecoration(
+                                                                // Glass effect for icon container
+                                                                color: Colors.white.withOpacity(0.2),
+                                                                shape: BoxShape.circle,
+                                                                border: Border.all(
+                                                                  color: Colors.white.withOpacity(0.8),
+                                                                  width: 2.5,
+                                                                ),
+                                                                boxShadow: [
+                                                                  // Outer glow
+                                                                  BoxShadow(
+                                                                    color: Colors.white.withOpacity(0.3),
+                                                                    blurRadius: 20,
+                                                                    spreadRadius: 1,
+                                                                  ),
+                                                                  // Inner shadow
+                                                                  BoxShadow(
+                                                                    color: Colors.black.withOpacity(0.3),
+                                                                    blurRadius: 15,
+                                                                    offset: const Offset(0, 5),
+                                                                    spreadRadius: -3,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              child: ShaderMask(
+                                                                shaderCallback: (Rect bounds) {
+                                                                  return const LinearGradient(
+                                                                    begin: Alignment.topLeft,
+                                                                    end: Alignment.bottomRight,
+                                                                    colors: [
+                                                                      Colors.white,
+                                                                      Color(0xFFF5F5F5),
+                                                                    ],
+                                                                  ).createShader(bounds);
+                                                                },
+                                                                blendMode: BlendMode.srcIn,
+                                                                child: const Icon(
+                                                                  Icons.delete_rounded,
+                                                                  color: Colors.white,
+                                                                  size: 36,
+                                                                ),
+                                                              ),
                                                             ),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors.black.withOpacity(0.2),
-                                                                blurRadius: 16,
-                                                                offset: const Offset(0, 8),
-                                                              ),
-                                                            ],
                                                           ),
-                                                          child: const Icon(
-                                                            Icons.delete_rounded,
-                                                            color: Colors.white,
-                                                            size: 36,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 24),
-                                                        Text(
-                                                          'Delete Function',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight: FontWeight.w700,
-                                                            fontSize: 28,
-                                                            letterSpacing: 0.5,
-                                                            shadows: [
-                                                              Shadow(
-                                                                color: Colors.black.withOpacity(0.3),
-                                                                offset: const Offset(0, 2),
-                                                                blurRadius: 4,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 24),
-                                                        Container(
-                                                          padding: const EdgeInsets.symmetric(
-                                                            horizontal: 24,
-                                                            vertical: 16,
-                                                          ),
-                                                          decoration: BoxDecoration(
-                                                            gradient: LinearGradient(
-                                                              begin: Alignment.topLeft,
-                                                              end: Alignment.bottomRight,
-                                                              colors: [
-                                                                Colors.black.withOpacity(0.4),
-                                                                Colors.black.withOpacity(0.2),
+                                                          const SizedBox(height: 24),
+                                                          // Enhanced title with text shadow
+                                                          Text(
+                                                            'Delete Function',
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontWeight: FontWeight.w700,
+                                                              fontSize: 28,
+                                                              letterSpacing: 0.5,
+                                                              shadows: [
+                                                                Shadow(
+                                                                  color: Colors.black.withOpacity(0.5),
+                                                                  offset: const Offset(0, 2),
+                                                                  blurRadius: 5,
+                                                                ),
+                                                                Shadow(
+                                                                  color: Colors.white.withOpacity(0.5),
+                                                                  offset: const Offset(0, -1),
+                                                                  blurRadius: 5,
+                                                                ),
                                                               ],
                                                             ),
-                                                            borderRadius: BorderRadius.circular(20),
-                                                            border: Border.all(
-                                                              color: Colors.white.withOpacity(0.3),
-                                                              width: 2,
+                                                          ),
+                                                          const SizedBox(height: 24),
+                                                          // Function display with glassmorphism
+                                                          Container(
+                                                            padding: const EdgeInsets.symmetric(
+                                                              horizontal: 24,
+                                                              vertical: 16,
                                                             ),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors.black.withOpacity(0.2),
-                                                                blurRadius: 8,
-                                                                offset: const Offset(0, 4),
+                                                            decoration: BoxDecoration(
+                                                              // Enhanced glassmorphism for function display
+                                                              gradient: LinearGradient(
+                                                                begin: Alignment.topLeft,
+                                                                end: Alignment.bottomRight,
+                                                                colors: [
+                                                                  Colors.black.withOpacity(0.4),
+                                                                  Colors.black.withOpacity(0.2),
+                                                                ],
                                                               ),
-                                                            ],
-                                                          ),
-                                                          child: SingleChildScrollView(
-                                                            scrollDirection: Axis.horizontal,
-                                                            child: Text(
-                                                              'f(x) = ${item['function']}',
-                                                              style: const TextStyle(
-                                                                color: Colors.white,
-                                                                fontWeight: FontWeight.w600,
-                                                                fontSize: 18,
-                                                                height: 1.5,
-                                                                letterSpacing: 0.5,
+                                                              borderRadius: BorderRadius.circular(20),
+                                                              // Double border effect
+                                                              border: Border.all(
+                                                                color: Colors.white.withOpacity(0.4),
+                                                                width: 2.5,
+                                                              ),
+                                                              boxShadow: [
+                                                                // Inner glow
+                                                                BoxShadow(
+                                                                  color: Colors.white.withOpacity(0.1),
+                                                                  blurRadius: 10,
+                                                                  spreadRadius: -2,
+                                                                ),
+                                                                // Outer shadow
+                                                                BoxShadow(
+                                                                  color: Colors.black.withOpacity(0.2),
+                                                                  blurRadius: 8,
+                                                                  offset: const Offset(0, 4),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            child: SingleChildScrollView(
+                                                              scrollDirection: Axis.horizontal,
+                                                              child: Text(
+                                                                'f(x) = ${item['function']}',
+                                                                style: const TextStyle(
+                                                                  color: Colors.white,
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 18,
+                                                                  height: 1.5,
+                                                                  letterSpacing: 0.5,
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(height: 24),
-                                                        Text(
-                                                          'Are you sure you want to delete this function?\nThis action cannot be undone.',
-                                                          textAlign: TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Colors.white.withOpacity(0.9),
-                                                            fontSize: 16,
-                                                            height: 1.6,
-                                                            letterSpacing: 0.3,
-                                                            shadows: [
-                                                              Shadow(
-                                                                color: Colors.black.withOpacity(0.2),
-                                                                offset: const Offset(0, 1),
-                                                                blurRadius: 2,
-                                                              ),
-                                                            ],
+                                                          const SizedBox(height: 24),
+                                                          Text(
+                                                            'Are you sure you want to delete this function?\nThis action cannot be undone.',
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              color: Colors.white.withOpacity(0.9),
+                                                              fontSize: 16,
+                                                              height: 1.6,
+                                                              letterSpacing: 0.3,
+                                                              shadows: [
+                                                                Shadow(
+                                                                  color: Colors.black.withOpacity(0.3),
+                                                                  offset: const Offset(0, 1),
+                                                                  blurRadius: 2,
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(height: 32),
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: TextButton(
-                                                                onPressed: () => Navigator.of(context).pop(false),
-                                                                style: TextButton.styleFrom(
-                                                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                                                  backgroundColor: Colors.white.withOpacity(0.2),
-                                                                  shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(16),
-                                                                    side: BorderSide(
-                                                                      color: Colors.white.withOpacity(0.3),
-                                                                      width: 2,
+                                                          const SizedBox(height: 32),
+                                                          // Buttons with glassmorphism
+                                                          Row(
+                                                            children: [
+                                                              // Cancel button
+                                                              Expanded(
+                                                                child: TextButton(
+                                                                  onPressed: () => Navigator.of(context).pop(false),
+                                                                  style: TextButton.styleFrom(
+                                                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                                                    // Enhanced glassmorphism for button
+                                                                    backgroundColor: Colors.white.withOpacity(0.15),
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(16),
+                                                                      side: BorderSide(
+                                                                        color: Colors.white.withOpacity(0.4),
+                                                                        width: 2,
+                                                                      ),
+                                                                    ),
+                                                                    shadowColor: Colors.black.withOpacity(0.3),
+                                                                  ),
+                                                                  child: const Text(
+                                                                    'CANCEL',
+                                                                    style: TextStyle(
+                                                                      color: Colors.white,
+                                                                      fontWeight: FontWeight.w600,
+                                                                      letterSpacing: 1.2,
+                                                                      fontSize: 15,
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                child: const Text(
-                                                                  'CANCEL',
-                                                                  style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontWeight: FontWeight.w600,
-                                                                    letterSpacing: 1.2,
-                                                                    fontSize: 15,
+                                                              ),
+                                                              const SizedBox(width: 16),
+                                                              // Delete button
+                                                              Expanded(
+                                                                child: ElevatedButton(
+                                                                  onPressed: () => Navigator.of(context).pop(true),
+                                                                  style: ElevatedButton.styleFrom(
+                                                                    backgroundColor: Colors.white,
+                                                                    foregroundColor: const Color(0xFFFF1744),
+                                                                    elevation: 0,
+                                                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(16),
+                                                                      side: BorderSide(
+                                                                        color: Colors.white.withOpacity(0.2),
+                                                                        width: 1,
+                                                                      ),
+                                                                    ),
+                                                                    shadowColor: Colors.black.withOpacity(0.3),
+                                                                  ),
+                                                                  child: const Text(
+                                                                    'DELETE',
+                                                                    style: TextStyle(
+                                                                      fontWeight: FontWeight.w600,
+                                                                      letterSpacing: 1.2,
+                                                                      fontSize: 15,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                            const SizedBox(width: 16),
-                                                            Expanded(
-                                                              child: ElevatedButton(
-                                                                onPressed: () => Navigator.of(context).pop(true),
-                                                                style: ElevatedButton.styleFrom(
-                                                                  backgroundColor: Colors.white,
-                                                                  foregroundColor: const Color(0xFFFF1744),
-                                                                  elevation: 0,
-                                                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                                                  shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(16),
-                                                                  ),
-                                                                  shadowColor: Colors.black.withOpacity(0.3),
-                                                                ),
-                                                                child: const Text(
-                                                                  'DELETE',
-                                                                  style: TextStyle(
-                                                                    fontWeight: FontWeight.w600,
-                                                                    letterSpacing: 1.2,
-                                                                    fontSize: 15,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -3762,8 +3910,8 @@ class FunctionGraphPainter extends CustomPainter {
         );
       }
       
-      // Only draw two y-axis labels at specific positions to avoid crowding
-      List<int> yValues = [-2, 2]; // Only show -2 and 2 on y-axis
+      // Draw y-axis tick marks without labels
+      List<int> yValues = [-2, 2]; // Only show ticks at -2 and 2 on y-axis
       
       for (int value in yValues) {
         // Calculate position - scale by 0.5 to fit the function's range better
@@ -3776,23 +3924,7 @@ class FunctionGraphPainter extends CustomPainter {
           axisPaint,
         );
         
-        // Draw label with more space
-        final textSpan = TextSpan(
-          text: value.toString(),
-          style: textStyle.copyWith(fontSize: 9), // Slightly smaller font
-        );
-        final textPainter = TextPainter(
-          text: textSpan,
-          textDirection: TextDirection.ltr,
-          textAlign: TextAlign.right,
-        );
-        textPainter.layout();
-        
-        // Position label to the left of y-axis with enough space
-        textPainter.paint(
-          canvas,
-          Offset(center.dx - textPainter.width - 10, y - textPainter.height / 2),
-        );
+        // Y-axis labels removed as requested
       }
       
       // Draw origin label (0)

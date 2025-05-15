@@ -76,54 +76,87 @@ class GridBackgroundPainter extends CustomPainter {
   final ColorScheme colorScheme;
   final bool isDark;
   final double animationValue;
-
+  
   GridBackgroundPainter({
     required this.colorScheme,
     required this.isDark,
     required this.animationValue,
   });
-
+  
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint gridPaint = Paint()
+    final width = size.width;
+    final height = size.height;
+    final center = Offset(width / 2, height / 2);
+    
+    // Define the coordinate transformation
+    final scale = width / 10; // 10 units in x direction
+    
+    // Draw background grid with subtle animation
+    final gridPaint = Paint()
       ..color = colorScheme.primary.withOpacity(0.05 * animationValue)
-      ..strokeWidth = 0.5;
-
-    // Draw horizontal grid lines
-    final int horizontalLinesCount = 10;
-    final double horizontalSpacing = size.height / horizontalLinesCount;
+      ..strokeWidth = 0.8;
     
-    for (int i = 0; i <= horizontalLinesCount; i++) {
-      final y = i * horizontalSpacing;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
+    // Vertical lines
+    for (int i = -5; i <= 5; i++) {
+      if (i == 0) continue; // Skip origin line
+      
+      final x = center.dx + i * scale;
+      final double opacity = 1.0 - (i.abs() / 6); // Fade out lines farther from center
+      gridPaint.color = colorScheme.primary.withOpacity(0.05 * opacity * animationValue);
+      
+      canvas.drawLine(
+        Offset(x, 0),
+        Offset(x, height),
+        gridPaint,
+      );
     }
-
-    // Draw vertical grid lines
-    final int verticalLinesCount = 10;
-    final double verticalSpacing = size.width / verticalLinesCount;
     
-    for (int i = 0; i <= verticalLinesCount; i++) {
-      final x = i * verticalSpacing;
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
+    // Horizontal lines
+    for (int i = -10; i <= 10; i++) {
+      if (i == 0) continue; // Skip origin line
+      
+      final y = center.dy - i * scale / 2;
+      final double opacity = 1.0 - (i.abs() / 11); // Fade out lines farther from center
+      gridPaint.color = colorScheme.primary.withOpacity(0.05 * opacity * animationValue);
+      
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(width, y),
+        gridPaint,
+      );
     }
-
-    // Draw x and y axes
-    final Paint axesPaint = Paint()
-      ..color = colorScheme.secondary.withOpacity(0.1 * animationValue)
-      ..strokeWidth = 1.0;
     
-    // X axis
-    final double xAxis = size.height / 2;
-    canvas.drawLine(Offset(0, xAxis), Offset(size.width, xAxis), axesPaint);
+    // Draw subtle dots at the intersection of grid lines
+    final dotPaint = Paint()
+      ..color = colorScheme.primary.withOpacity(0.05 * animationValue)
+      ..style = PaintingStyle.fill;
     
-    // Y axis
-    final double yAxis = size.width / 2;
-    canvas.drawLine(Offset(yAxis, 0), Offset(yAxis, size.height), axesPaint);
+    for (int i = -5; i <= 5; i++) {
+      if (i == 0) continue;
+      
+      final x = center.dx + i * scale;
+      
+      for (int j = -10; j <= 10; j++) {
+        if (j == 0) continue;
+        
+        final y = center.dy - j * scale / 2;
+        final double opacity = 1.0 - ((i.abs() + j.abs()) / 17);
+        dotPaint.color = colorScheme.primary.withOpacity(0.05 * opacity * animationValue);
+        
+        canvas.drawCircle(
+          Offset(x, y),
+          1.0, 
+          dotPaint,
+        );
+      }
+    }
   }
-
+  
   @override
-  bool shouldRepaint(GridBackgroundPainter oldDelegate) {
+  bool shouldRepaint(covariant GridBackgroundPainter oldDelegate) {
     return oldDelegate.animationValue != animationValue ||
+           oldDelegate.colorScheme != colorScheme || 
            oldDelegate.isDark != isDark;
   }
 }
@@ -132,89 +165,249 @@ class FunctionGraphPainter extends CustomPainter {
   final List<Map<String, dynamic>> terms;
   final ColorScheme colorScheme;
   final bool isDark;
-
+  
   FunctionGraphPainter({
     required this.terms,
     required this.colorScheme,
     required this.isDark,
   });
-
+  
   @override
   void paint(Canvas canvas, Size size) {
-    if (terms.isEmpty) return;
-
-    final Paint functionPaint = Paint()
-      ..color = colorScheme.secondary
-      ..strokeWidth = 2.0
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..style = PaintingStyle.stroke;
-
-    final double width = size.width;
-    final double height = size.height;
+    final width = size.width;
+    final height = size.height;
+    final center = Offset(width / 2, height / 2);
     
-    // Draw function curve
-    final Path path = Path();
-    bool isFirst = true;
-
-    // Define range for x values on grid
-    final double xMin = -5.0;
-    final double xMax = 5.0;
-    final double yMin = -5.0;
-    final double yMax = 5.0;
+    // Define the coordinate transformation
+    final scale = width / 10; // 10 units in x direction
     
-    // Translate grid coordinates to canvas coordinates
-    double gridToCanvasX(double x) => ((x - xMin) / (xMax - xMin)) * width;
-    double gridToCanvasY(double y) => height - ((y - yMin) / (yMax - yMin)) * height;
+    // Draw background grid
+    _drawGrid(canvas, size, scale);
     
-    // Function to evaluate polynomial at point x
-    double evalFunction(double x) {
-      double result = 0.0;
-      for (final term in terms) {
-        final double coefficient = term['coefficient'];
-        final int power = term['power'];
-        final bool isVariable = term['isVariable'];
-        
-        if (isVariable) {
-          result += coefficient * pow(x, power);
-        } else {
-          result += coefficient;
-        }
-      }
-      return result;
-    }
+    // Draw axes
+    _drawAxes(canvas, size, center, scale);
     
-    // Sample points to draw the curve
-    final int samples = 100;
-    final double dx = (xMax - xMin) / samples;
-    
-    for (int i = 0; i <= samples; i++) {
-      final double x = xMin + i * dx;
-      final double y = evalFunction(x);
-      
-      // Only draw if y is within range
-      if (y >= yMin && y <= yMax) {
-        final double canvasX = gridToCanvasX(x);
-        final double canvasY = gridToCanvasY(y);
-        
-        if (isFirst) {
-          path.moveTo(canvasX, canvasY);
-          isFirst = false;
-        } else {
-          path.lineTo(canvasX, canvasY);
-        }
-      } else if (!isFirst) {
-        // Handle case where curve goes out of bounds
-        isFirst = true;
-      }
-    }
-    
-    canvas.drawPath(path, functionPaint);
+    // Draw function
+    _drawFunction(canvas, size, center, scale);
   }
-
+  
+  void _drawGrid(Canvas canvas, Size size, double scale) {
+    final paint = Paint()
+      ..color = colorScheme.primary.withOpacity(0.1)
+      ..strokeWidth = 0.5;
+    
+    // Vertical lines
+    for (int i = -5; i <= 5; i++) {
+      final x = size.width / 2 + i * scale;
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+    }
+    
+    // Horizontal lines
+    for (int i = -5; i <= 5; i++) {
+      final y = size.height / 2 - i * scale / 2;
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+    }
+  }
+  
+  void _drawAxes(Canvas canvas, Size size, Offset center, double scale) {
+    final axisPaint = Paint()
+      ..color = colorScheme.primary.withOpacity(0.5)
+      ..strokeWidth = 1.5;
+    
+    // X-axis
+    canvas.drawLine(
+      Offset(0, center.dy),
+      Offset(size.width, center.dy),
+      axisPaint,
+    );
+    
+    // Y-axis
+    canvas.drawLine(
+      Offset(center.dx, 0),
+      Offset(center.dx, size.height),
+      axisPaint,
+    );
+    
+    try {
+      // Draw tick marks and labels on x-axis
+      final textStyle = TextStyle(
+        color: colorScheme.primary.withOpacity(0.7),
+        fontSize: 10,
+      );
+      
+      for (int i = -4; i <= 4; i += 2) {
+        if (i == 0) continue; // Skip origin
+        
+        final x = center.dx + i * scale;
+        // Draw tick
+        canvas.drawLine(
+          Offset(x, center.dy - 4),
+          Offset(x, center.dy + 4),
+          axisPaint,
+        );
+        
+        // Draw label
+        final textSpan = TextSpan(text: i.toString(), style: textStyle);
+        final textPainter = TextPainter(
+          text: textSpan,
+          textDirection: TextDirection.ltr,
+          textAlign: TextAlign.center,
+        );
+        textPainter.layout();
+        textPainter.paint(
+          canvas,
+          Offset(x - textPainter.width / 2, center.dy + 8),
+        );
+      }
+    } catch (e) {
+      // Skip labels if there's an error
+      debugPrint('Error drawing axis labels: $e');
+    }
+  }
+  
+  void _drawFunction(Canvas canvas, Size size, Offset center, double scale) {
+    if (terms.isEmpty) return;
+    
+    try {
+      final functionPaint = Paint()
+        ..color = terms.isEmpty 
+            ? colorScheme.secondary.withOpacity(0.5)
+            : colorScheme.secondary
+        ..strokeWidth = 1.5
+        ..strokeCap = StrokeCap.round
+        ..style = PaintingStyle.stroke;
+      
+      final path = Path();
+      bool started = false;
+      
+      // Calculate y values for each point
+      for (double pixelX = 0; pixelX < size.width; pixelX++) {
+        // Convert pixel x to graph x
+        final x = (pixelX - center.dx) / scale;
+        
+        // Calculate f(x)
+        double y = 0;
+        for (final term in terms) {
+          try {
+            final coefficient = term['coefficient'] as double;
+            final power = term['power'] as int;
+            final isVariable = term['isVariable'] as bool;
+            
+            if (isVariable) {
+              y += coefficient * pow(x, power);
+            } else {
+              y += coefficient;
+            }
+          } catch (e) {
+            // Skip this term if there's an error
+            debugPrint('Error processing term: $e');
+          }
+        }
+        
+        // Convert graph y to pixel y (flipped because pixel y increases downward)
+        final pixelY = center.dy - y * scale / 2;
+        
+        // Skip if y is too large (avoid drawing lines that go way off screen)
+        if (pixelY.abs() > size.height * 2) continue;
+        
+        if (!started) {
+          path.moveTo(pixelX, pixelY);
+          started = true;
+        } else {
+          path.lineTo(pixelX, pixelY);
+        }
+      }
+      
+      // Draw the function path
+      canvas.drawPath(path, functionPaint);
+      
+      // Draw a shadow for better visibility with dynamic color based on terms
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = terms.isEmpty 
+              ? colorScheme.secondary.withOpacity(0.1)
+              : colorScheme.secondary.withOpacity(0.25)
+          ..strokeWidth = terms.isEmpty ? 2 : 4
+          ..strokeCap = StrokeCap.round
+          ..style = PaintingStyle.stroke
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+      );
+      
+      // Draw x-intercepts (roots)
+      _drawRoots(canvas, size, center, scale);
+    } catch (e) {
+      debugPrint('Error drawing function: $e');
+    }
+  }
+  
+  void _drawRoots(Canvas canvas, Size size, Offset center, double scale) {
+    if (terms.isEmpty) return; // Don't try to find roots if no terms exist
+    
+    final rootPaint = Paint()
+      ..color = colorScheme.tertiary.withOpacity(terms.isEmpty ? 0.5 : 0.8)
+      ..style = PaintingStyle.fill;
+    
+    final rootStrokePaint = Paint()
+      ..color = isDark ? Colors.white.withOpacity(0.8) : Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    
+    // Find x-intercepts (approximate)
+    try {
+      double prevY = _calculateY(-5);
+      
+      for (double x = -4.99; x <= 5; x += 0.01) {
+        final y = _calculateY(x);
+        
+        // Check if we crossed the x-axis
+        if ((prevY < 0 && y >= 0) || (prevY > 0 && y <= 0)) {
+          // Draw a point at the root (x-intercept)
+          final pixelX = center.dx + x * scale;
+          canvas.drawCircle(Offset(pixelX, center.dy), 6, rootPaint);
+          canvas.drawCircle(Offset(pixelX, center.dy), 6, rootStrokePaint);
+        }
+        
+        prevY = y;
+      }
+    } catch (e) {
+      // If an error occurs, just skip drawing roots
+      debugPrint('Error drawing roots: $e');
+    }
+  }
+  
+  double _calculateY(double x) {
+    double y = 0;
+    if (terms.isEmpty) return y;
+    
+    try {
+      for (final term in terms) {
+        try {
+          final coefficient = term['coefficient'] as double;
+          final power = term['power'] as int;
+          final isVariable = term['isVariable'] as bool;
+          
+          if (isVariable) {
+            y += coefficient * pow(x, power);
+          } else {
+            y += coefficient;
+          }
+        } catch (e) {
+          // Skip this term if there's an error
+          debugPrint('Error processing term in _calculateY: $e');
+        }
+      }
+    } catch (e) {
+      debugPrint('Error calculating y value: $e');
+    }
+    return y;
+  }
+  
   @override
-  bool shouldRepaint(FunctionGraphPainter oldDelegate) {
-    return oldDelegate.terms != terms;
+  bool shouldRepaint(covariant FunctionGraphPainter oldDelegate) {
+    return oldDelegate.terms != terms || 
+           oldDelegate.colorScheme != colorScheme || 
+           oldDelegate.isDark != isDark;
   }
 }
 
@@ -611,12 +804,12 @@ class _SimpleFixedPointMethodScreenState extends State<SimpleFixedPointMethodScr
                               decoration: BoxDecoration(
                                 color: isDark 
                                     ? colorScheme.surface.withOpacity(0.8) 
-                                    : colorScheme.secondary.withOpacity(0.03),
+                                    : colorScheme.primary.withOpacity(0.03),
                                 borderRadius: BorderRadius.circular(24),
                                 border: Border.all(
                                   color: dialogTerms.isEmpty 
                                       ? colorScheme.outline.withOpacity(0.2)
-                                      : colorScheme.secondary.withOpacity(0.4),
+                                      : colorScheme.tertiary.withOpacity(0.4),
                                   width: 1.5,
                                 ),
                                 gradient: LinearGradient(
@@ -629,16 +822,16 @@ class _SimpleFixedPointMethodScreenState extends State<SimpleFixedPointMethodScr
                                               colorScheme.surface.withOpacity(0.8),
                                             ]
                                           : [
-                                              colorScheme.secondary.withOpacity(0.04),
+                                              colorScheme.primary.withOpacity(0.04),
                                               colorScheme.secondary.withOpacity(0.02),
                                             ])
                                       : (isDark
                                           ? [
-                                              colorScheme.secondary.withOpacity(0.1),
-                                              colorScheme.secondary.withOpacity(0.08),
+                                              colorScheme.tertiary.withOpacity(0.1),
+                                              colorScheme.primary.withOpacity(0.08),
                                             ]
                                           : [
-                                              colorScheme.secondary.withOpacity(0.08),
+                                              colorScheme.tertiary.withOpacity(0.08),
                                               colorScheme.secondary.withOpacity(0.05),
                                             ]),
                                 ),
@@ -646,7 +839,7 @@ class _SimpleFixedPointMethodScreenState extends State<SimpleFixedPointMethodScr
                                   BoxShadow(
                                     color: dialogTerms.isEmpty
                                         ? colorScheme.shadow.withOpacity(0.1)
-                                        : colorScheme.secondary.withOpacity(0.2),
+                                        : colorScheme.tertiary.withOpacity(0.2),
                                     blurRadius: 16,
                                     offset: const Offset(0, 4),
                                     spreadRadius: -4,
@@ -1865,224 +2058,275 @@ class _SimpleFixedPointMethodScreenState extends State<SimpleFixedPointMethodScr
                                     insetPadding: EdgeInsets.zero,
                                     child: Stack(
                                       children: [
-                                        // Blurred background
+                                        // Enhanced blurred background with animation
                                         Positioned.fill(
                                           child: BackdropFilter(
                                             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                            child: Container(
-                                              color: Colors.black.withOpacity(0.1),
+                                            child: TweenAnimationBuilder<double>(
+                                              duration: const Duration(milliseconds: 300),
+                                              tween: Tween<double>(begin: 0, end: 0.2),
+                                              builder: (context, value, child) {
+                                                return Container(
+                                                  color: Colors.black.withOpacity(value),
+                                                );
+                                              },
                                             ),
                                           ),
                                         ),
-                                        // Dialog content
+                                        // Dialog content with enhanced glass effect
                                         Center(
-                                          child: Container(
-                                            width: 400,
-                                            margin: const EdgeInsets.symmetric(horizontal: 40),
-                                            decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
-                                                stops: const [0.0, 0.35, 0.7, 1.0],
-                                                colors: [
-                                                  const Color(0xFFB71C1C).withOpacity(0.8),  // Dark red
-                                                  const Color(0xFF960000).withOpacity(0.85),  // Darker red
-                                                  const Color(0xFF7F0000).withOpacity(0.9),  // Very dark red
-                                                  const Color(0xFF550000).withOpacity(0.95),  // Extremely dark red
-                                                ],
-                                              ),
-                                              borderRadius: BorderRadius.circular(28),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: const Color(0xFFB71C1C).withOpacity(0.3),
-                                                  blurRadius: 40,
-                                                  offset: const Offset(0, 20),
-                                                  spreadRadius: -12,
+                                          child: TweenAnimationBuilder<double>(
+                                            duration: const Duration(milliseconds: 400),
+                                            curve: Curves.easeOutQuint,
+                                            tween: Tween<double>(begin: 0.9, end: 1.0),
+                                            builder: (context, scale, child) {
+                                              return Transform.scale(
+                                                scale: scale,
+                                                child: child,
+                                              );
+                                            },
+                                            child: Container(
+                                              width: 400,
+                                              margin: const EdgeInsets.symmetric(horizontal: 40),
+                                              decoration: BoxDecoration(
+                                                // Enhanced gradient with more layers
+                                                gradient: LinearGradient(
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
+                                                  stops: const [0.0, 0.35, 0.7, 1.0],
+                                                  colors: [
+                                                    const Color(0xFFC62828).withOpacity(0.8),  // Brighter red
+                                                    const Color(0xFFB71C1C).withOpacity(0.85),  // Dark red
+                                                    const Color(0xFF960000).withOpacity(0.9),  // Darker red
+                                                    const Color(0xFF7F0000).withOpacity(0.95),  // Very dark red
+                                                  ],
                                                 ),
-                                              ],
-                                              border: Border.all(
-                                                color: Colors.white.withOpacity(0.2),
-                                                width: 2,
-                                              ),
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(28),
-                                              child: BackdropFilter(
-                                                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                      begin: Alignment.topCenter,
-                                                      end: Alignment.bottomCenter,
-                                                      stops: const [0.0, 0.3, 0.6, 1.0],
-                                                      colors: [
-                                                        Colors.white.withOpacity(0.3),
-                                                        Colors.white.withOpacity(0.15),
-                                                        Colors.white.withOpacity(0.05),
-                                                        Colors.white.withOpacity(0.0),
-                                                      ],
-                                                    ),
+                                                borderRadius: BorderRadius.circular(32),
+                                                // Enhanced shadow for depth
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: const Color(0xFFB71C1C).withOpacity(0.3),
+                                                    blurRadius: 40,
+                                                    offset: const Offset(0, 20),
+                                                    spreadRadius: -12,
                                                   ),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(32),
-                                                    child: Column(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        Container(
-                                                          padding: const EdgeInsets.all(20),
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.white.withOpacity(0.2),
-                                                            shape: BoxShape.circle,
-                                                            border: Border.all(
-                                                              color: Colors.white.withOpacity(0.5),
-                                                              width: 2,
-                                                            ),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors.black.withOpacity(0.2),
-                                                                blurRadius: 16,
-                                                                offset: const Offset(0, 8),
+                                                  BoxShadow(
+                                                    color: Colors.black.withOpacity(0.1),
+                                                    blurRadius: 10,
+                                                    offset: const Offset(0, 5),
+                                                    spreadRadius: 0,
+                                                  ),
+                                                ],
+                                                // Enhanced border for glass effect
+                                                border: Border.all(
+                                                  color: Colors.white.withOpacity(0.3),
+                                                  width: 2,
+                                                ),
+                                              ),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(32),
+                                                // Enhanced blur for glass effect
+                                                child: BackdropFilter(
+                                                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      // Enhanced gradient overlay for light effect
+                                                      gradient: LinearGradient(
+                                                        begin: Alignment.topCenter,
+                                                        end: Alignment.bottomCenter,
+                                                        stops: const [0.0, 0.3, 0.6, 1.0],
+                                                        colors: [
+                                                          Colors.white.withOpacity(0.4),
+                                                          Colors.white.withOpacity(0.2),
+                                                          Colors.white.withOpacity(0.05),
+                                                          Colors.white.withOpacity(0.0),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(32),
+                                                      child: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          // Enhanced icon container with glow
+                                                          Container(
+                                                            padding: const EdgeInsets.all(20),
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.white.withOpacity(0.2),
+                                                              shape: BoxShape.circle,
+                                                              border: Border.all(
+                                                                color: Colors.white.withOpacity(0.5),
+                                                                width: 2,
                                                               ),
-                                                            ],
-                                                          ),
-                                                          child: const Icon(
-                                                            Icons.delete_rounded,
-                                                            color: Colors.white,
-                                                            size: 36,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 24),
-                                                        Text(
-                                                          'Delete Function',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight: FontWeight.w700,
-                                                            fontSize: 28,
-                                                            letterSpacing: 0.5,
-                                                            shadows: [
-                                                              Shadow(
-                                                                color: Colors.black.withOpacity(0.3),
-                                                                offset: const Offset(0, 2),
-                                                                blurRadius: 4,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 24),
-                                                        Container(
-                                                          padding: const EdgeInsets.symmetric(
-                                                            horizontal: 24,
-                                                            vertical: 16,
-                                                          ),
-                                                          decoration: BoxDecoration(
-                                                            gradient: LinearGradient(
-                                                              begin: Alignment.topLeft,
-                                                              end: Alignment.bottomRight,
-                                                              colors: [
-                                                                Colors.black.withOpacity(0.4),
-                                                                Colors.black.withOpacity(0.2),
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors.white.withOpacity(0.15),
+                                                                  blurRadius: 20,
+                                                                  spreadRadius: 2,
+                                                                ),
+                                                                BoxShadow(
+                                                                  color: Colors.black.withOpacity(0.2),
+                                                                  blurRadius: 16,
+                                                                  offset: const Offset(0, 8),
+                                                                ),
                                                               ],
                                                             ),
-                                                            borderRadius: BorderRadius.circular(20),
-                                                            border: Border.all(
-                                                              color: Colors.white.withOpacity(0.3),
-                                                              width: 2,
+                                                            child: const Icon(
+                                                              Icons.delete_rounded,
+                                                              color: Colors.white,
+                                                              size: 36,
                                                             ),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors.black.withOpacity(0.2),
-                                                                blurRadius: 8,
-                                                                offset: const Offset(0, 4),
-                                                              ),
-                                                            ],
                                                           ),
-                                                          child: SingleChildScrollView(
-                                                            scrollDirection: Axis.horizontal,
+                                                          const SizedBox(height: 24),
+                                                          // Enhanced title with glow effect
+                                                          ShaderMask(
+                                                            shaderCallback: (Rect bounds) {
+                                                              return LinearGradient(
+                                                                begin: Alignment.topLeft,
+                                                                end: Alignment.bottomRight,
+                                                                colors: [
+                                                                  Colors.white,
+                                                                  Colors.white.withOpacity(0.9),
+                                                                ],
+                                                              ).createShader(bounds);
+                                                            },
                                                             child: Text(
-                                                              'g(x) = ${item['function']}',
-                                                              style: const TextStyle(
+                                                              'Delete Function',
+                                                              style: TextStyle(
                                                                 color: Colors.white,
-                                                                fontWeight: FontWeight.w600,
-                                                                fontSize: 18,
-                                                                height: 1.5,
+                                                                fontWeight: FontWeight.w700,
+                                                                fontSize: 28,
                                                                 letterSpacing: 0.5,
+                                                                shadows: [
+                                                                  Shadow(
+                                                                    color: Colors.black.withOpacity(0.3),
+                                                                    offset: const Offset(0, 2),
+                                                                    blurRadius: 4,
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(height: 24),
-                                                        Text(
-                                                          'Are you sure you want to delete this function?\nThis action cannot be undone.',
-                                                          textAlign: TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Colors.white.withOpacity(0.9),
-                                                            fontSize: 16,
-                                                            height: 1.6,
-                                                            letterSpacing: 0.3,
-                                                            shadows: [
-                                                              Shadow(
-                                                                color: Colors.black.withOpacity(0.2),
-                                                                offset: const Offset(0, 1),
-                                                                blurRadius: 2,
+                                                          const SizedBox(height: 24),
+                                                          // Enhanced function preview container
+                                                          Container(
+                                                            padding: const EdgeInsets.symmetric(
+                                                              horizontal: 24,
+                                                              vertical: 16,
+                                                            ),
+                                                            decoration: BoxDecoration(
+                                                              // Enhanced glass effect with gradient
+                                                              gradient: LinearGradient(
+                                                                begin: Alignment.topLeft,
+                                                                end: Alignment.bottomRight,
+                                                                colors: [
+                                                                  Colors.black.withOpacity(0.3),
+                                                                  Colors.black.withOpacity(0.1),
+                                                                ],
                                                               ),
-                                                            ],
+                                                              borderRadius: BorderRadius.circular(24),
+                                                              border: Border.all(
+                                                                color: Colors.white.withOpacity(0.3),
+                                                                width: 2,
+                                                              ),
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors.black.withOpacity(0.2),
+                                                                  blurRadius: 8,
+                                                                  offset: const Offset(0, 4),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            child: SingleChildScrollView(
+                                                              scrollDirection: Axis.horizontal,
+                                                              child: Text(
+                                                                'g(x) = ${item['function']}',
+                                                                style: const TextStyle(
+                                                                  color: Colors.white,
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 18,
+                                                                  height: 1.5,
+                                                                  letterSpacing: 0.5,
+                                                                ),
+                                                              ),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(height: 32),
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: TextButton(
-                                                                onPressed: () => Navigator.of(context).pop(false),
-                                                                style: TextButton.styleFrom(
-                                                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                                                  backgroundColor: Colors.white.withOpacity(0.2),
-                                                                  shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(16),
-                                                                    side: BorderSide(
-                                                                      color: Colors.white.withOpacity(0.3),
-                                                                      width: 2,
+                                                          const SizedBox(height: 24),
+                                                          // Enhanced message text with glow
+                                                          Text(
+                                                            'Are you sure you want to delete this function?\nThis action cannot be undone.',
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              color: Colors.white.withOpacity(0.9),
+                                                              fontSize: 16,
+                                                              height: 1.6,
+                                                              letterSpacing: 0.3,
+                                                              shadows: [
+                                                                Shadow(
+                                                                  color: Colors.black.withOpacity(0.2),
+                                                                  offset: const Offset(0, 1),
+                                                                  blurRadius: 2,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 32),
+                                                          // Enhanced buttons with better glass effect
+                                                          Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child: TextButton(
+                                                                  onPressed: () => Navigator.of(context).pop(false),
+                                                                  style: TextButton.styleFrom(
+                                                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                                                    backgroundColor: Colors.white.withOpacity(0.2),
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(20),
+                                                                      side: BorderSide(
+                                                                        color: Colors.white.withOpacity(0.4),
+                                                                        width: 2,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  child: const Text(
+                                                                    'CANCEL',
+                                                                    style: TextStyle(
+                                                                      color: Colors.white,
+                                                                      fontWeight: FontWeight.w600,
+                                                                      letterSpacing: 1.2,
+                                                                      fontSize: 15,
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                child: const Text(
-                                                                  'CANCEL',
-                                                                  style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontWeight: FontWeight.w600,
-                                                                    letterSpacing: 1.2,
-                                                                    fontSize: 15,
+                                                              ),
+                                                              const SizedBox(width: 16),
+                                                              Expanded(
+                                                                child: ElevatedButton(
+                                                                  onPressed: () => Navigator.of(context).pop(true),
+                                                                  style: ElevatedButton.styleFrom(
+                                                                    backgroundColor: Colors.white,
+                                                                    foregroundColor: const Color(0xFFFF1744),
+                                                                    elevation: 0,
+                                                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(20),
+                                                                    ),
+                                                                    shadowColor: Colors.black.withOpacity(0.3),
+                                                                  ),
+                                                                  child: const Text(
+                                                                    'DELETE',
+                                                                    style: TextStyle(
+                                                                      fontWeight: FontWeight.w600,
+                                                                      letterSpacing: 1.2,
+                                                                      fontSize: 15,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                            const SizedBox(width: 16),
-                                                            Expanded(
-                                                              child: ElevatedButton(
-                                                                onPressed: () => Navigator.of(context).pop(true),
-                                                                style: ElevatedButton.styleFrom(
-                                                                  backgroundColor: Colors.white,
-                                                                  foregroundColor: const Color(0xFFFF1744),
-                                                                  elevation: 0,
-                                                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                                                  shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(16),
-                                                                  ),
-                                                                  shadowColor: Colors.black.withOpacity(0.3),
-                                                                ),
-                                                                child: const Text(
-                                                                  'DELETE',
-                                                                  style: TextStyle(
-                                                                    fontWeight: FontWeight.w600,
-                                                                    letterSpacing: 1.2,
-                                                                    fontSize: 15,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
