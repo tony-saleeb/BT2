@@ -1967,274 +1967,356 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
           insetPadding: EdgeInsets.zero,
           child: Stack(
             children: [
-              // Blurred background
+              // Enhanced blurred background with animation
               Positioned.fill(
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
-                    color: Colors.black.withOpacity(0.1),
+                  child: TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 300),
+                    tween: Tween<double>(begin: 0, end: 0.2),
+                    builder: (context, value, child) {
+                      return Container(
+                        color: Colors.black.withOpacity(value),
+                      );
+                    },
                   ),
                 ),
               ),
-              // Dialog content
+              // Dialog content with enhanced glass effect
               Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width > 500 ? 400.w : MediaQuery.of(context).size.width * 0.85,
-                  margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width > 500 ? 40.w : 16.w),
-                  constraints: BoxConstraints(maxWidth: 350.w),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      stops: const [0.0, 0.35, 0.7, 1.0],
-                      colors: [
-                        const Color(0xFFB71C1C).withOpacity(0.8),  // Dark red
-                        const Color(0xFF960000).withOpacity(0.85),  // Darker red
-                        const Color(0xFF7F0000).withOpacity(0.9),  // Very dark red
-                        const Color(0xFF550000).withOpacity(0.95),  // Extremely dark red
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(24.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFB71C1C).withOpacity(0.3),
-                        blurRadius: 40,
-                        offset: const Offset(0, 20),
-                        spreadRadius: -12,
+                child: TweenAnimationBuilder<double>(
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeOutQuint,
+                  tween: Tween<double>(begin: 0.9, end: 1.0),
+                  builder: (context, scale, child) {
+                    return Transform.scale(
+                      scale: scale,
+                      child: child,
+                    );
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width > 500 ? 400.w : MediaQuery.of(context).size.width * 0.85,
+                    margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width > 500 ? 40.w : 16.w),
+                    constraints: BoxConstraints(maxWidth: 350.w),
+                    decoration: BoxDecoration(
+                      // Enhanced gradient with more layers
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        stops: const [0.0, 0.35, 0.7, 1.0],
+                        colors: [
+                          const Color(0xFFC62828).withOpacity(0.8),  // Brighter red
+                          const Color(0xFFB71C1C).withOpacity(0.85),  // Dark red
+                          const Color(0xFF960000).withOpacity(0.9),  // Darker red
+                          const Color(0xFF7F0000).withOpacity(0.95),  // Very dark red
+                        ],
                       ),
-                    ],
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
-                      width: 1.5,
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24.r),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            stops: const [0.0, 0.3, 0.6, 1.0],
-                            colors: [
-                              Colors.white.withOpacity(0.3),
-                              Colors.white.withOpacity(0.15),
-                              Colors.white.withOpacity(0.05),
-                              Colors.white.withOpacity(0.0),
-                            ],
-                          ),
+                      borderRadius: BorderRadius.circular(32.r),
+                      // Enhanced shadow for depth
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFB71C1C).withOpacity(0.3),
+                          blurRadius: 40,
+                          offset: const Offset(0, 20),
+                          spreadRadius: -12,
                         ),
-                        child: Padding(
-                          padding: EdgeInsets.all(20.w),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Delete Icon
-                              Icon(
-                                Icons.delete_rounded,
-                                color: Colors.white,
-                                size: 36.w,
-                              ),
-                              SizedBox(height: 16.h),
-                              
-                              // Title
-                              Text(
-                                'Delete Matrix',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 22.sp,
-                                  letterSpacing: 0.5,
-                                  shadows: [
-                                    Shadow(
-                                      color: Colors.black.withOpacity(0.3),
-                                      offset: const Offset(0, 2),
-                                      blurRadius: 4,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 16.h),
-                              
-                              // Matrix Preview Container
-                              Container(
-                                padding: EdgeInsets.all(8.w),
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.25),
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  border: Border.all(
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                          spreadRadius: 0,
+                        ),
+                      ],
+                      // Enhanced border for glass effect
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 2,
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(32.r),
+                      // Enhanced blur for glass effect
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            // Enhanced gradient overlay for light effect
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              stops: const [0.0, 0.3, 0.6, 1.0],
+                              colors: [
+                                Colors.white.withOpacity(0.4),
+                                Colors.white.withOpacity(0.2),
+                                Colors.white.withOpacity(0.05),
+                                Colors.white.withOpacity(0.0),
+                              ],
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(20.w),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // Enhanced icon container with glow
+                                Container(
+                                  padding: EdgeInsets.all(20.w),
+                                  decoration: BoxDecoration(
                                     color: Colors.white.withOpacity(0.2),
-                                    width: 1,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0.5),
+                                      width: 2,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.white.withOpacity(0.15),
+                                        blurRadius: 20,
+                                        spreadRadius: 2,
+                                      ),
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 16,
+                                        offset: const Offset(0, 8),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.delete_rounded,
+                                    color: Colors.white,
+                                    size: 36.w,
                                   ),
                                 ),
-                                // Using FittedBox to ensure the matrix fits within the dialog
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Container(
-                                    constraints: BoxConstraints(maxWidth: 220.w),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        for (int i = 0; i < (historyItem['coefficients'] as List<dynamic>).length; i++) 
-                                          Padding(
-                                            padding: EdgeInsets.only(bottom: i < 2 ? 3.h : 0),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                for (int j = 0; j < (historyItem['coefficients'][i] as List<dynamic>).length; j++)
-                                                  Container(
-                                                    width: 32.w,
-                                                    height: 28.h,
-                                                    alignment: Alignment.center,
-                                                    margin: EdgeInsets.symmetric(horizontal: 2.w),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white.withOpacity(0.15),
-                                                      borderRadius: BorderRadius.circular(4.r),
-                                                      border: Border.all(
-                                                        color: Colors.white.withOpacity(0.2),
-                                                        width: 1,
+                                SizedBox(height: 16.h),
+                                
+                                // Enhanced title with glow effect
+                                ShaderMask(
+                                  shaderCallback: (Rect bounds) {
+                                    return LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.white,
+                                        Colors.white.withOpacity(0.9),
+                                      ],
+                                    ).createShader(bounds);
+                                  },
+                                  child: Text(
+                                    'Delete Matrix',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 22.sp,
+                                      letterSpacing: 0.5,
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black.withOpacity(0.3),
+                                          offset: const Offset(0, 2),
+                                          blurRadius: 4,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 16.h),
+                                
+                                // Matrix Preview Container with enhanced glass effect
+                                Container(
+                                  padding: EdgeInsets.all(8.w),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    // Enhanced glass effect with gradient
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.black.withOpacity(0.3),
+                                        Colors.black.withOpacity(0.1),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(16.r),
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0.3),
+                                      width: 2,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  // Using FittedBox to ensure the matrix fits within the dialog
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Container(
+                                      constraints: BoxConstraints(maxWidth: 220.w),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          for (int i = 0; i < (historyItem['coefficients'] as List<dynamic>).length; i++) 
+                                            Padding(
+                                              padding: EdgeInsets.only(bottom: i < 2 ? 3.h : 0),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  for (int j = 0; j < (historyItem['coefficients'][i] as List<dynamic>).length; j++)
+                                                    Container(
+                                                      width: 28.w,
+                                                      height: 22.h,
+                                                      alignment: Alignment.center,
+                                                      margin: EdgeInsets.symmetric(horizontal: 1.w),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white.withOpacity(0.15),
+                                                        borderRadius: BorderRadius.circular(3.r),
+                                                      ),
+                                                      child: Text(
+                                                        '${_formatNumber(historyItem['coefficients'][i][j])}',
+                                                        style: TextStyle(
+                                                          fontSize: 9.sp,
+                                                          color: Colors.white.withOpacity(0.9),
+                                                          fontWeight: FontWeight.w500,
+                                                        ),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
                                                       ),
                                                     ),
+                                                  Container(
+                                                    width: 12.w,
+                                                    alignment: Alignment.center,
                                                     child: Text(
-                                                      '${_formatNumber(historyItem['coefficients'][i][j])}',
+                                                      '=',
                                                       style: TextStyle(
-                                                        fontSize: 11.sp,
+                                                        fontSize: 9.sp,
+                                                        fontWeight: FontWeight.bold,
                                                         color: Colors.white,
-                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    width: 28.w,
+                                                    height: 22.h,
+                                                    alignment: Alignment.center,
+                                                    margin: EdgeInsets.only(left: 1.w),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white.withOpacity(0.25),
+                                                      borderRadius: BorderRadius.circular(3.r),
+                                                    ),
+                                                    child: Text(
+                                                      '${_formatNumber(historyItem['constants'][i])}',
+                                                      style: TextStyle(
+                                                        fontSize: 9.sp,
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.w600,
                                                       ),
                                                       maxLines: 1,
                                                       overflow: TextOverflow.ellipsis,
                                                     ),
                                                   ),
-                                                Container(
-                                                  width: 16.w,
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    '=',
-                                                    style: TextStyle(
-                                                      fontSize: 11.sp,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: 32.w,
-                                                  height: 28.h,
-                                                  alignment: Alignment.center,
-                                                  margin: EdgeInsets.only(left: 2.w),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white.withOpacity(0.25),
-                                                    borderRadius: BorderRadius.circular(4.r),
-                                                    border: Border.all(
-                                                      color: Colors.white.withOpacity(0.3),
-                                                      width: 1,
-                                                    ),
-                                                  ),
-                                                  child: Text(
-                                                    '${_formatNumber(historyItem['constants'][i])}',
-                                                    style: TextStyle(
-                                                      fontSize: 11.sp,
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 16.h),
-                              
-                              // Warning message
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(8.r),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.warning_amber_rounded,
-                                      color: Colors.amber,
-                                      size: 16.w,
+                                SizedBox(height: 16.h),
+                                
+                                // Enhanced warning message with glass effect
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12.r),
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0.2),
+                                      width: 1,
                                     ),
-                                    SizedBox(width: 8.w),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.warning_amber_rounded,
+                                        color: Colors.amber,
+                                        size: 16.w,
+                                      ),
+                                      SizedBox(width: 8.w),
+                                      Expanded(
+                                        child: Text(
+                                          'This matrix will be permanently removed from history',
+                                          style: TextStyle(
+                                            color: Colors.white.withOpacity(0.9),
+                                            fontSize: 12.sp,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                
+                                SizedBox(height: 24.h),
+                                
+                                // Enhanced action buttons
+                                Row(
+                                  children: [
+                                    // Cancel button with glass effect
                                     Expanded(
-                                      child: Text(
-                                        'This matrix will be permanently removed from history',
-                                        style: TextStyle(
-                                          color: Colors.white.withOpacity(0.9),
-                                          fontSize: 12.sp,
+                                      child: TextButton(
+                                        onPressed: () => Navigator.of(context).pop(false),
+                                        style: TextButton.styleFrom(
+                                          padding: EdgeInsets.symmetric(vertical: 16.h),
+                                          backgroundColor: Colors.white.withOpacity(0.2),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(20.r),
+                                            side: BorderSide(
+                                              color: Colors.white.withOpacity(0.4),
+                                              width: 2,
+                                            ),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'CANCEL',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 1.2,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 12.w),
+                                    // Delete button
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: () => Navigator.of(context).pop(true),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          foregroundColor: const Color(0xFFFF1744),
+                                          elevation: 0,
+                                          padding: EdgeInsets.symmetric(vertical: 16.h),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(20.r),
+                                          ),
+                                          shadowColor: Colors.black.withOpacity(0.3),
+                                        ),
+                                        child: const Text(
+                                          'DELETE',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 1.2,
+                                            fontSize: 15,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              
-                              SizedBox(height: 24.h),
-                              
-                              // Action buttons
-                              Row(
-                                children: [
-                                  // Cancel button
-                                  Expanded(
-                                    child: OutlinedButton(
-                                      onPressed: () => Navigator.of(context).pop(false),
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: Colors.white,
-                                        side: BorderSide(color: Colors.white.withOpacity(0.3), width: 1),
-                                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8.r),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'CANCEL',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14.sp,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 12.w),
-                                  // Delete button
-                                  Expanded(
-                                    child: FilledButton(
-                                      onPressed: () => Navigator.of(context).pop(true),
-                                      style: FilledButton.styleFrom(
-                                        backgroundColor: Colors.red.shade700,
-                                        foregroundColor: Colors.white,
-                                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8.r),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'DELETE',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 14.sp,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),

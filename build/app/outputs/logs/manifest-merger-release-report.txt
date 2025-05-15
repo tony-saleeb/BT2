@@ -1,7 +1,7 @@
 -- Merging decision tree log ---
 application
-INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:2:5-33:19
-INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:2:5-33:19
+INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:2:5-34:19
+INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:2:5-34:19
 MERGED from [androidx.window:window:1.2.0] C:\Users\TONY\.gradle\caches\8.10.2\transforms\7a0ee5c564ac1dcd1579bab7d805d293\transformed\jetified-window-1.2.0\AndroidManifest.xml:22:5-29:19
 MERGED from [androidx.window:window:1.2.0] C:\Users\TONY\.gradle\caches\8.10.2\transforms\7a0ee5c564ac1dcd1579bab7d805d293\transformed\jetified-window-1.2.0\AndroidManifest.xml:22:5-29:19
 MERGED from [androidx.core:core:1.13.1] C:\Users\TONY\.gradle\caches\8.10.2\transforms\c74f1aa271eeb587aa807a3ce3f85f41\transformed\core-1.13.1\AndroidManifest.xml:28:5-89
@@ -20,16 +20,18 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\TO
 		ADDED from [androidx.core:core:1.13.1] C:\Users\TONY\.gradle\caches\8.10.2\transforms\c74f1aa271eeb587aa807a3ce3f85f41\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
 	android:label
 		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:3:9-34
+	android:roundIcon
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:6:9-54
 	android:icon
 		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:5:9-43
 	android:name
 		INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml
 		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:4:9-42
 manifest
-ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:1:1-45:12
-INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:1:1-45:12
-INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:1:1-45:12
-INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:1:1-45:12
+ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:1:1-46:12
+INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:1:1-46:12
+INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:1:1-46:12
+INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:1:1-46:12
 MERGED from [:shared_preferences_android] C:\Users\TONY\numerical\build\shared_preferences_android\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:2:1-7:12
 MERGED from [:path_provider_android] C:\Users\TONY\numerical\build\path_provider_android\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.preference:preference:1.2.1] C:\Users\TONY\.gradle\caches\8.10.2\transforms\19243c33a1da843d8b5192fe12369afd\transformed\preference-1.2.1\AndroidManifest.xml:17:1-24:12
@@ -93,57 +95,57 @@ MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] C:\Users\TONY\.gradle\cach
 	xmlns:android
 		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:1:11-69
 queries
-ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:39:5-44:15
+ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:40:5-45:15
 intent#action:name:android.intent.action.PROCESS_TEXT+data:mimeType:text/plain
-ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:40:9-43:18
+ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:41:9-44:18
 action#android.intent.action.PROCESS_TEXT
-ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:41:13-72
+ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:42:13-72
 	android:name
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:41:21-70
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:42:21-70
 data
-ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:42:13-50
+ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:43:13-50
 	android:mimeType
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:42:19-48
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:43:19-48
 activity#com.example.numerical.MainActivity
-ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:6:9-27:20
+ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:7:9-28:20
 	android:launchMode
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:9:13-43
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:10:13-43
 	android:hardwareAccelerated
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:13:13-47
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:14:13-47
 	android:windowSoftInputMode
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:14:13-55
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:15:13-55
 	android:exported
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:8:13-36
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:9:13-36
 	android:configChanges
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:12:13-163
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:13:13-163
 	android:theme
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:11:13-47
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:12:13-47
 	android:taskAffinity
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:10:13-36
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:11:13-36
 	android:name
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:7:13-41
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:8:13-41
 meta-data#io.flutter.embedding.android.NormalTheme
-ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:19:13-22:17
+ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:20:13-23:17
 	android:resource
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:21:15-52
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:22:15-52
 	android:name
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:20:15-70
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:21:15-70
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:23:13-26:29
+ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:24:13-27:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:24:17-68
+ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:25:17-68
 	android:name
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:24:25-66
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:25:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:25:17-76
+ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:26:17-76
 	android:name
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:25:27-74
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:26:27-74
 meta-data#flutterEmbedding
-ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:30:9-32:33
+ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:31:9-33:33
 	android:value
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:32:13-30
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:33:13-30
 	android:name
-		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:31:13-44
+		ADDED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml:32:13-44
 uses-sdk
 INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\TONY\numerical\android\app\src\main\AndroidManifest.xml

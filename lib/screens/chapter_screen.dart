@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:ui' show lerpDouble;
+import 'dart:ui' show lerpDouble, ImageFilter;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../models/numerical_method.dart';
 import './bisection_method_screen.dart';
@@ -357,28 +357,31 @@ class _ChapterScreenState extends State<ChapterScreen> with SingleTickerProvider
                                 colorScheme.secondary.withOpacity(0.08),
                               ]
                             : [
-                                colorScheme.primary.withOpacity(0.03),
-                                colorScheme.background,
-                                colorScheme.secondary.withOpacity(0.05),
+                                // Darker pearl white gradient for light mode
+                                const Color(0xFFE8EDF6),
+                                const Color(0xFFDFE7F0),
+                                const Color(0xFFD6DEE8),
                               ],
                         stops: const [0.0, 0.5, 1.0],
                       ),
                     ),
                   ),
-                  // Fixed decorative elements
+                  // Fixed decorative elements - adding pearlescent accents
                   ...List.generate(_methods.length, (index) {
                     final offset = index * 0.85;
                     return Positioned(
                       left: MediaQuery.of(context).size.width * offset + 40.w,
                       bottom: 40.h,
                       child: Opacity(
-                        opacity: 0.5,
+                        opacity: isDark ? 0.5 : 0.75,
                         child: Container(
                           width: 60.w,
                           height: 60.w,
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: colorScheme.primary.withOpacity(0.1),
+                              color: isDark
+                                  ? colorScheme.primary.withOpacity(0.1)
+                                  : const Color(0xFFA4B8D4),
                               width: 1,
                             ),
                             shape: BoxShape.circle,
@@ -393,13 +396,15 @@ class _ChapterScreenState extends State<ChapterScreen> with SingleTickerProvider
                       right: MediaQuery.of(context).size.width * offset + 20.w,
                       top: 120.h,
                       child: Opacity(
-                        opacity: 0.5,
+                        opacity: isDark ? 0.5 : 0.75,
                         child: Container(
                           width: 40.w,
                           height: 40.w,
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: colorScheme.secondary.withOpacity(0.2),
+                              color: isDark
+                                  ? colorScheme.secondary.withOpacity(0.2)
+                                  : const Color(0xFF9BB5D9),
                               width: 2,
                             ),
                             borderRadius: BorderRadius.only(
@@ -660,204 +665,242 @@ class MethodCardContent extends StatelessWidget {
     final isSelected = progress < 0.5;
     final parallax = math.sin(progress * math.pi) * 80.w * (parentProgress < 0 ? 1 : -1);
     
+    // More performant glassmorphism implementation
     return Container(
       decoration: BoxDecoration(
-        color: colorScheme.surface,
+        // Base decoration 
+        color: isDark 
+            ? colorScheme.surface.withOpacity(0.45)
+            : const Color(0xFFF5F7FB).withOpacity(0.65),
         borderRadius: BorderRadius.circular(40.r),
+        // Enhanced double border for more obvious glass effect
         border: Border.all(
-          color: colorScheme.outline.withOpacity(0.2),
-          width: 1.5,
+          width: 2.0, // Increased from 1.5
+          color: isDark
+              ? Colors.white.withOpacity(0.8) // More opaque
+              : const Color(0xFF9FB8D8).withOpacity(0.95), // Darker, more visible
         ),
         boxShadow: [
+          // Inner glow effect
           BoxShadow(
-            color: colorScheme.primary.withOpacity(0.05),
+            color: isDark
+                ? Colors.white.withOpacity(0.05)
+                : Colors.white.withOpacity(0.25),
+            blurRadius: 10.r,
+            spreadRadius: 0.5.r,
+            // Inset shadow for inner glow
+            offset: const Offset(0, 0),
+          ),
+          // Outer shadow
+          BoxShadow(
+            color: isDark
+                ? colorScheme.primary.withOpacity(0.05)
+                : const Color(0xFF8BA3C7).withOpacity(0.35), // More opaque
             blurRadius: 20.r,
             offset: Offset(0, 8.h),
-            spreadRadius: 0.r,
+            spreadRadius: 1.r, // Added spread for more visible shadow
           ),
         ],
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(method.chapter == 2 ? 24.r : 32.r),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Method number indicator with creative design
-            Transform.translate(
-              offset: Offset(-parallax * 0.2, 0),
-              child: Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: method.chapter == 2 ? 12.w : 16.w,
-                      vertical: method.chapter == 2 ? 6.h : 8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? colorScheme.secondary.withOpacity(0.15)
-                          : colorScheme.primary.withOpacity(0.05),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12.r),
-                        bottomRight: Radius.circular(12.r),
-                        topRight: Radius.circular(4.r),
-                        bottomLeft: Radius.circular(4.r),
-                      ),
-                      border: Border.all(
-                        color: isSelected
-                            ? colorScheme.secondary.withOpacity(0.3)
-                            : Colors.transparent,
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          (index + 1).toString().padLeft(2, '0'),
-                          style: TextStyle(
-                            color: isSelected
-                                ? colorScheme.secondary
-                                : colorScheme.primary.withOpacity(0.6),
-                            fontSize: method.chapter == 2 ? 14.sp : 16.sp,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                        Text(
-                          ' / ${NumericalMethod.getMethodsForChapter(method.chapter).length.toString().padLeft(2, '0')}',
-                          style: TextStyle(
-                            color: (isSelected
-                                ? colorScheme.secondary
-                                : colorScheme.primary)
-                                .withOpacity(0.4),
-                            fontSize: method.chapter == 2 ? 12.sp : 14.sp,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (isSelected) ...[
-                    SizedBox(width: 12.w),
-                    Container(
-                      width: 24.w,
-                      height: 2.h,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            colorScheme.secondary.withOpacity(0.3),
-                            colorScheme.secondary.withOpacity(0),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+        // Gradient overlay for glass effect
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isDark 
+              ? [
+                  Colors.white.withOpacity(0.15),
+                  Colors.white.withOpacity(0.05),
+                ]
+              : [
+                  Colors.white.withOpacity(0.8), // Increased opacity
+                  Colors.white.withOpacity(0.35),
                 ],
-              ),
-            ),
-            
-            SizedBox(height: method.chapter == 2 ? 12.h : 24.h),
-            
-            // Method tag with enhanced design
-            Transform.translate(
-              offset: Offset(-parallax * 0.4, 0),
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: method.chapter == 2 ? 10.w : 12.w,
-                  vertical: method.chapter == 2 ? 6.h : 8.h,
-                ),
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(8.r),
-                  border: Border.all(
-                    color: colorScheme.primary.withOpacity(0.1),
-                    width: 1,
-                  ),
-                ),
+          stops: const [0.1, 0.9],
+        ),
+      ),
+      // Mark for hardware acceleration
+      child: RepaintBoundary(
+        child: Padding(
+          padding: EdgeInsets.all(method.chapter == 2 ? 24.r : 32.r),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Method number indicator with creative design
+              Transform.translate(
+                offset: Offset(-parallax * 0.2, 0),
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: method.chapter == 2 ? 3.w : 4.w,
-                      height: method.chapter == 2 ? 3.w : 4.w,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: method.chapter == 2 ? 12.w : 16.w,
+                        vertical: method.chapter == 2 ? 6.h : 8.h,
+                      ),
                       decoration: BoxDecoration(
-                        color: colorScheme.primary.withOpacity(0.5),
-                        shape: BoxShape.circle,
+                        color: isSelected
+                            ? colorScheme.secondary.withOpacity(0.15)
+                            : colorScheme.primary.withOpacity(0.05),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(12.r),
+                          bottomRight: Radius.circular(12.r),
+                          topRight: Radius.circular(4.r),
+                          bottomLeft: Radius.circular(4.r),
+                        ),
+                        border: Border.all(
+                          color: isSelected
+                              ? colorScheme.secondary.withOpacity(0.3)
+                              : Colors.transparent,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            (index + 1).toString().padLeft(2, '0'),
+                            style: TextStyle(
+                              color: isSelected
+                                  ? colorScheme.secondary
+                                  : colorScheme.primary.withOpacity(0.6),
+                              fontSize: method.chapter == 2 ? 14.sp : 16.sp,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                          Text(
+                            ' / ${NumericalMethod.getMethodsForChapter(method.chapter).length.toString().padLeft(2, '0')}',
+                            style: TextStyle(
+                              color: (isSelected
+                                  ? colorScheme.secondary
+                                  : colorScheme.primary)
+                                  .withOpacity(0.4),
+                              fontSize: method.chapter == 2 ? 12.sp : 14.sp,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(width: method.chapter == 2 ? 6.w : 8.w),
-                    Text(
-                      method.tag.toUpperCase(),
-                      style: TextStyle(
-                        color: colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                        fontSize: method.chapter == 2 ? 10.sp : 12.sp,
-                        letterSpacing: 1.2,
+                    if (isSelected) ...[
+                      SizedBox(width: 12.w),
+                      Container(
+                        width: 24.w,
+                        height: 2.h,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              colorScheme.secondary.withOpacity(0.3),
+                              colorScheme.secondary.withOpacity(0),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
-            ),
-            
-            SizedBox(height: method.chapter == 2 ? 12.h : 24.h),
-            
-            // Method name with creative typography
-            Transform.translate(
-              offset: Offset(-parallax * 0.4, 0),
-              child: ShaderMask(
-                shaderCallback: (bounds) => LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    colorScheme.onSurface,
-                    colorScheme.onSurface.withOpacity(0.8),
-                  ],
-                ).createShader(bounds),
-                child: Text(
-                  method.name,
-                  style: TextStyle(
-                    fontSize: method.chapter == 2 ? 32.sp : 40.sp,
-                    fontWeight: FontWeight.w800,
-                    height: 1.1,
-                    color: Colors.white,
-                    letterSpacing: -1.0,
+              
+              SizedBox(height: method.chapter == 2 ? 12.h : 24.h),
+              
+              // Method tag with enhanced design
+              Transform.translate(
+                offset: Offset(-parallax * 0.4, 0),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: method.chapter == 2 ? 10.w : 12.w,
+                    vertical: method.chapter == 2 ? 6.h : 8.h,
                   ),
-                  maxLines: 2,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primary.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(
+                      color: colorScheme.primary.withOpacity(0.1),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: method.chapter == 2 ? 3.w : 4.w,
+                        height: method.chapter == 2 ? 3.w : 4.w,
+                        decoration: BoxDecoration(
+                          color: colorScheme.primary.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      SizedBox(width: method.chapter == 2 ? 6.w : 8.w),
+                      Text(
+                        method.tag.toUpperCase(),
+                        style: TextStyle(
+                          color: colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: method.chapter == 2 ? 10.sp : 12.sp,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              
+              SizedBox(height: method.chapter == 2 ? 12.h : 24.h),
+              
+              // Method name with creative typography
+              Transform.translate(
+                offset: Offset(-parallax * 0.4, 0),
+                child: ShaderMask(
+                  shaderCallback: (bounds) => LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      colorScheme.onSurface,
+                      colorScheme.onSurface.withOpacity(0.8),
+                    ],
+                  ).createShader(bounds),
+                  child: Text(
+                    method.name,
+                    style: TextStyle(
+                      fontSize: method.chapter == 2 ? 32.sp : 40.sp,
+                      fontWeight: FontWeight.w800,
+                      height: 1.1,
+                      color: Colors.white,
+                      letterSpacing: -1.0,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              
+              SizedBox(height: method.chapter == 2 ? 12.h : 16.h),
+              
+              // Description with enhanced readability
+              Transform.translate(
+                offset: Offset(-parallax * 0.6, 0),
+                child: Text(
+                  method.description,
+                  style: TextStyle(
+                    fontSize: method.chapter == 2 ? 14.sp : 16.sp,
+                    color: colorScheme.onSurface.withOpacity(0.75),
+                    height: 1.6,
+                    letterSpacing: 0.3,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  maxLines: method.chapter == 2 ? 4 : 3,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ),
-            
-            SizedBox(height: method.chapter == 2 ? 12.h : 16.h),
-            
-            // Description with enhanced readability
-            Transform.translate(
-              offset: Offset(-parallax * 0.6, 0),
-              child: Text(
-                method.description,
-                style: TextStyle(
-                  fontSize: method.chapter == 2 ? 14.sp : 16.sp,
-                  color: colorScheme.onSurface.withOpacity(0.75),
-                  height: 1.6,
-                  letterSpacing: 0.3,
-                  fontWeight: FontWeight.w400,
-                ),
-                maxLines: method.chapter == 2 ? 4 : 3,
-                overflow: TextOverflow.ellipsis,
+              
+              SizedBox(height: method.chapter == 2 ? 24.h : 32.h),
+              
+              // Action button
+              Transform.translate(
+                offset: Offset(-parallax * 0.8, 0),
+                child: _buildActionButton(context, isSelected),
               ),
-            ),
-            
-            SizedBox(height: method.chapter == 2 ? 24.h : 32.h),
-            
-            // Action button
-            Transform.translate(
-              offset: Offset(-parallax * 0.8, 0),
-              child: _buildActionButton(context, isSelected),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

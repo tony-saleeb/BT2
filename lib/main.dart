@@ -957,11 +957,11 @@ class FuturisticPatternPainter extends CustomPainter {
     
     // Matrix grid
     final cellSize = 20.0; // Larger cell size
-    final rows = 4; // More rows 
+    final rows = 3; // Changed from 4 to 3 rows for a 3x3 matrix
     final cols = 3; // Keep 3 columns
     // Move the grid to the right side of the card
     final offsetX = size.width * 0.55;
-    final offsetY = size.height * 0.18; // Position it higher
+    final offsetY = size.height * 0.10; // Position it even higher (changed from 0.18)
     
     // Draw grid
     for (int i = 0; i <= rows; i++) {
