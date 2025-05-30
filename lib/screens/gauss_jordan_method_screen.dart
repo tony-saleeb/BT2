@@ -1628,11 +1628,6 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
   }
 
   void _showMatrixHistory() {
-    // Add current matrix to history before showing
-    if (_hasAnyValue()) {
-      _saveCurrentMatrixToHistory();
-    }
-    
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -1640,317 +1635,304 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
       builder: (context) {
         final colorScheme = Theme.of(context).colorScheme;
         final isDark = Theme.of(context).brightness == Brightness.dark;
-        
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.7,
-          decoration: BoxDecoration(
-            color: isDark ? colorScheme.surface : Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.r),
-              topRight: Radius.circular(20.r),
-            ),
-          ),
-          child: Column(
-            children: [
-              // Header
-              Container(
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: colorScheme.outline.withOpacity(0.1),
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(8.w),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primary.withOpacity(0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.history,
-                        color: colorScheme.primary,
-                        size: 20.w,
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Text(
-                      'Matrix History',
-                      style: TextStyle(
-                        color: colorScheme.onSurface,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.sp,
-                      ),
-                    ),
-                    Spacer(),
-                    IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.7,
+              decoration: BoxDecoration(
+                color: isDark ? colorScheme.surface : Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.r),
+                  topRight: Radius.circular(20.r),
                 ),
               ),
-              
-              // History list
-              Expanded(
-                child: _matrixHistory.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.history_toggle_off,
-                              size: 64.w,
-                              color: colorScheme.onSurface.withOpacity(0.2),
-                            ),
-                            SizedBox(height: 16.h),
-                            Text(
-                              'No history yet',
-                              style: TextStyle(
-                                color: colorScheme.onSurface.withOpacity(0.5),
-                                fontSize: 16.sp,
-                              ),
-                            ),
-                            SizedBox(height: 8.h),
-                            Text(
-                              'Previously entered matrices will appear here',
-                              style: TextStyle(
-                                color: colorScheme.onSurface.withOpacity(0.3),
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                          ],
+              child: Column(
+                children: [
+                  // Header
+                  Container(
+                    padding: EdgeInsets.all(16.w),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: colorScheme.outline.withOpacity(0.1),
+                          width: 1,
                         ),
-                      )
-                    : Column(
-                        children: [
-                          // List of history items
-                          Expanded(
-                            child: ListView.builder(
-                              padding: EdgeInsets.symmetric(horizontal: 16.w),
-                              itemCount: _matrixHistory.length,
-                              itemBuilder: (context, index) {
-                                // Reverse the index to show newest first
-                                final reversedIndex = _matrixHistory.length - 1 - index;
-                                final historyItem = _matrixHistory[reversedIndex];
-                                
-                                // Format timestamp
-                                final DateTime timestamp = DateTime.fromMillisecondsSinceEpoch(
-                                  historyItem['timestamp'] is int
-                                      ? historyItem['timestamp']
-                                      : 0,
-                                );
-                                final String formattedDate = DateFormat('MMM d, yyyy • h:mm a').format(timestamp);
-                                
-                                return Dismissible(
-                                  key: Key('history_${historyItem['timestamp']}'),
-                                  direction: DismissDirection.endToStart,
-                                  background: Container(
-                                    alignment: Alignment.centerRight,
-                                    padding: EdgeInsets.only(right: 20.w),
-                                    decoration: BoxDecoration(
-                                      color: Colors.red.shade700,
-                                      borderRadius: BorderRadius.circular(12.r),
-                                    ),
-                                    child: Icon(
-                                      Icons.delete,
-                                      color: Colors.white,
-                                      size: 24.w,
-                                    ),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8.w),
+                          decoration: BoxDecoration(
+                            color: colorScheme.primary.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.history,
+                            color: colorScheme.primary,
+                            size: 20.w,
+                          ),
+                        ),
+                        SizedBox(width: 12.w),
+                        Text(
+                          'Matrix History',
+                          style: TextStyle(
+                            color: colorScheme.onSurface,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.sp,
+                          ),
+                        ),
+                        Spacer(),
+                        IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // History list
+                  Expanded(
+                    child: Builder(
+                      builder: (context) {
+                        if (_matrixHistory.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.history_toggle_off,
+                                  size: 64.w,
+                                  color: colorScheme.onSurface.withOpacity(0.2),
+                                ),
+                                SizedBox(height: 16.h),
+                                Text(
+                                  'No history yet',
+                                  style: TextStyle(
+                                    color: colorScheme.onSurface.withOpacity(0.5),
+                                    fontSize: 16.sp,
                                   ),
-                                  confirmDismiss: (direction) async {
-                                    return await _showDeleteConfirmationDialog(historyItem);
+                                ),
+                                SizedBox(height: 8.h),
+                                Text(
+                                  'Previously entered matrices will appear here',
+                                  style: TextStyle(
+                                    color: colorScheme.onSurface.withOpacity(0.3),
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          return ListView.builder(
+                            padding: EdgeInsets.symmetric(vertical: 8.h),
+                            itemCount: _matrixHistory.length,
+                            itemBuilder: (context, index) {
+                              final displayIndex = _matrixHistory.length - 1 - index;
+                              final historyItem = _matrixHistory[displayIndex];
+                              final uniqueKey = ValueKey(historyItem['timestamp'].toString());
+                              // Handle timestamp in different formats
+                              DateTime timestamp;
+                              if (historyItem['timestamp'] is int) {
+                                timestamp = DateTime.fromMillisecondsSinceEpoch(historyItem['timestamp']);
+                              } else if (historyItem['timestamp'] is DateTime) {
+                                timestamp = historyItem['timestamp'] as DateTime;
+                              } else {
+                                timestamp = DateTime.now();
+                              }
+                              final timeString = '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}';
+                              final dateString = '${timestamp.day}/${timestamp.month}/${timestamp.year}';
+                              return Dismissible(
+                                key: uniqueKey,
+                                background: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade700,
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.only(right: 20.w),
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                    size: 24.w,
+                                  ),
+                                ),
+                                direction: DismissDirection.endToStart,
+                                confirmDismiss: (direction) async {
+                                  return await _showDeleteConfirmationDialog(historyItem);
+                                },
+                                onDismissed: (direction) async {
+                                  if (displayIndex >= 0 && displayIndex < _matrixHistory.length) {
+                                    _matrixHistory.removeAt(displayIndex);
+                                    await _saveMatrixHistory();
+                                    await _loadMatrixHistoryAsync();
+                                    setModalState(() {});
+                                  }
+                                },
+                                child: InkWell(
+                                  onTap: () {
+                                    _loadMatrixFromHistory(historyItem);
+                                    Navigator.pop(context);
                                   },
-                                  onDismissed: (direction) {
-                                    setState(() {
-                                      _matrixHistory.removeAt(reversedIndex);
-                                      _saveMatrixHistory();
-                                    });
+                                  onLongPress: () {
+                                    HapticFeedback.mediumImpact();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.swipe,
+                                              color: Colors.white,
+                                              size: 20.w,
+                                            ),
+                                            SizedBox(width: 12.w),
+                                            Text('Swipe left to delete this matrix'),
+                                          ],
+                                        ),
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: colorScheme.tertiary,
+                                        duration: const Duration(seconds: 2),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.r),
+                                        ),
+                                        margin: EdgeInsets.all(16.w),
+                                      ),
+                                    );
                                   },
-                                  dismissThresholds: {DismissDirection.endToStart: 0.5},
-                                  child: Card(
-                                    margin: EdgeInsets.only(bottom: 12.h),
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                                    padding: EdgeInsets.all(12.w),
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.surface,
                                       borderRadius: BorderRadius.circular(12.r),
-                                      side: BorderSide(
+                                      border: Border.all(
                                         color: colorScheme.outline.withOpacity(0.2),
                                         width: 1,
                                       ),
                                     ),
-                                    child: InkWell(
-                                      onTap: () => _loadMatrixFromHistory(historyItem),
-                                      onLongPress: () {
-                                        // Provide haptic feedback
-                                        HapticFeedback.mediumImpact();
-                                        
-                                        // Show a hint tooltip
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.swipe,
-                                                  color: Colors.white,
-                                                  size: 20.w,
-                                                ),
-                                                SizedBox(width: 12.w),
-                                                Text('Swipe left to delete this matrix'),
-                                              ],
-                                            ),
-                                            behavior: SnackBarBehavior.floating,
-                                            backgroundColor: colorScheme.tertiary,
-                                            duration: const Duration(seconds: 2),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10.r),
-                                            ),
-                                            margin: EdgeInsets.all(16.w),
-                                          ),
-                                        );
-                                      },
-                                      borderRadius: BorderRadius.circular(12.r),
-                                      child: Padding(
-                                        padding: EdgeInsets.all(12.w),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        // Timestamp
+                                        Row(
                                           children: [
-                                            // Timestamp with swipe hint
+                                            Icon(
+                                              Icons.access_time,
+                                              size: 14.w,
+                                              color: colorScheme.onSurface.withOpacity(0.5),
+                                            ),
+                                            SizedBox(width: 6.w),
+                                            Text(
+                                              '$timeString • $dateString',
+                                              style: TextStyle(
+                                                color: colorScheme.onSurface.withOpacity(0.5),
+                                                fontSize: 12.sp,
+                                              ),
+                                            ),
+                                            Spacer(),
                                             Row(
                                               children: [
                                                 Icon(
-                                                  Icons.access_time,
+                                                  Icons.swipe_left,
                                                   size: 14.w,
-                                                  color: colorScheme.onSurface.withOpacity(0.5),
+                                                  color: colorScheme.primary.withOpacity(0.6),
                                                 ),
-                                                SizedBox(width: 6.w),
+                                                SizedBox(width: 4.w),
                                                 Text(
-                                                  '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')} • ${timestamp.day}/${timestamp.month}/${timestamp.year}',
+                                                  'Delete',
                                                   style: TextStyle(
-                                                    color: colorScheme.onSurface.withOpacity(0.5),
+                                                    color: colorScheme.primary.withOpacity(0.6),
                                                     fontSize: 12.sp,
+                                                    fontWeight: FontWeight.w500,
                                                   ),
                                                 ),
-                                                Spacer(),
-                                                // Hint to swipe
-                                                Row(
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 12.h),
+                                        // Matrix preview (same as before)
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            ...List.generate((historyItem['coefficients'] as List<dynamic>).length, (i) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(bottom: 6.h),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
-                                                    Icon(
-                                                      Icons.swipe_left,
-                                                      size: 14.w,
-                                                      color: colorScheme.primary.withOpacity(0.6),
+                                                    ...List.generate((historyItem['coefficients'][i] as List<dynamic>).length, (j) {
+                                                      return Container(
+                                                        width: 40.w,
+                                                        alignment: Alignment.center,
+                                                        margin: EdgeInsets.symmetric(horizontal: 2.w),
+                                                        padding: EdgeInsets.symmetric(vertical: 4.h),
+                                                        decoration: BoxDecoration(
+                                                          color: colorScheme.primary.withOpacity(0.05),
+                                                          borderRadius: BorderRadius.circular(4.r),
+                                                        ),
+                                                        child: Text(
+                                                          '${_formatNumber(historyItem['coefficients'][i][j])}',
+                                                          style: TextStyle(
+                                                            fontSize: 12.sp,
+                                                            color: colorScheme.onSurface,
+                                                          ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow.ellipsis,
+                                                        ),
+                                                      );
+                                                    }),
+                                                    Container(
+                                                      width: 20.w,
+                                                      alignment: Alignment.center,
+                                                      child: Text(
+                                                        '=',
+                                                        style: TextStyle(
+                                                          fontSize: 12.sp,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
                                                     ),
-                                                    SizedBox(width: 4.w),
-                                                    Text(
-                                                      'Delete',
-                                                      style: TextStyle(
-                                                        color: colorScheme.primary.withOpacity(0.6),
-                                                        fontSize: 12.sp,
-                                                        fontWeight: FontWeight.w500,
+                                                    Container(
+                                                      width: 40.w,
+                                                      alignment: Alignment.center,
+                                                      margin: EdgeInsets.symmetric(horizontal: 2.w),
+                                                      padding: EdgeInsets.symmetric(vertical: 4.h),
+                                                      decoration: BoxDecoration(
+                                                        color: colorScheme.tertiary.withOpacity(0.05),
+                                                        borderRadius: BorderRadius.circular(4.r),
+                                                      ),
+                                                      child: Text(
+                                                        '${_formatNumber(historyItem['constants'][i])}',
+                                                        style: TextStyle(
+                                                          fontSize: 12.sp,
+                                                          color: colorScheme.tertiary,
+                                                        ),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
-                                              ],
-                                            ),
-                                            
-                                            SizedBox(height: 12.h),
-                                            
-                                            // Matrix preview with improved styling
-                                            Container(
-                                              padding: EdgeInsets.all(8.w),
-                                              decoration: BoxDecoration(
-                                                color: colorScheme.surface,
-                                                borderRadius: BorderRadius.circular(8.r),
-                                                border: Border.all(
-                                                  color: colorScheme.outline.withOpacity(0.2),
-                                                  width: 1,
-                                                ),
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                  for (int i = 0; i < (historyItem['coefficients'] as List<dynamic>).length; i++) 
-                                                    Padding(
-                                                      padding: EdgeInsets.only(bottom: 6.h),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          for (int j = 0; j < (historyItem['coefficients'][i] as List<dynamic>).length; j++)
-                                                            Container(
-                                                              width: 40.w,
-                                                              alignment: Alignment.center,
-                                                              margin: EdgeInsets.symmetric(horizontal: 2.w),
-                                                              padding: EdgeInsets.symmetric(vertical: 4.h),
-                                                              decoration: BoxDecoration(
-                                                                color: colorScheme.primary.withOpacity(0.05),
-                                                                borderRadius: BorderRadius.circular(4.r),
-                                                              ),
-                                                              child: Text(
-                                                                '${_formatNumber(historyItem['coefficients'][i][j])}',
-                                                                style: TextStyle(
-                                                                  fontSize: 12.sp,
-                                                                  color: colorScheme.onSurface,
-                                                                ),
-                                                                maxLines: 1,
-                                                                overflow: TextOverflow.ellipsis,
-                                                              ),
-                                                            ),
-                                                          
-                                                          Container(
-                                                            width: 20.w,
-                                                            alignment: Alignment.center,
-                                                            child: Text(
-                                                              '=',
-                                                              style: TextStyle(
-                                                                fontSize: 12.sp,
-                                                                fontWeight: FontWeight.bold,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          
-                                                          Container(
-                                                            width: 40.w,
-                                                            alignment: Alignment.center,
-                                                            margin: EdgeInsets.symmetric(horizontal: 2.w),
-                                                            padding: EdgeInsets.symmetric(vertical: 4.h),
-                                                            decoration: BoxDecoration(
-                                                              color: colorScheme.tertiary.withOpacity(0.05),
-                                                              borderRadius: BorderRadius.circular(4.r),
-                                                            ),
-                                                            child: Text(
-                                                              '${_formatNumber(historyItem['constants'][i])}',
-                                                              style: TextStyle(
-                                                                fontSize: 12.sp,
-                                                                color: colorScheme.tertiary,
-                                                              ),
-                                                              maxLines: 1,
-                                                              overflow: TextOverflow.ellipsis,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                ],
-                                              ),
-                                            ),
+                                              );
+                                            }),
                                           ],
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
