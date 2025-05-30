@@ -85,7 +85,7 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
   final List<Map<String, dynamic>> _matrixHistory = [];
   
   // Storage key for matrix history
-  static const String _matrixHistoryKey = 'gauss_elimination_matrix_history';
+  static const String _matrixHistoryKey = 'gauss_elimination_matrix_history_v2';
 
   @override
   void initState() {
@@ -112,8 +112,8 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
     // Initialize controllers
     _initializeControllers();
     
-    // Load saved history
-    _loadMatrixHistory();
+    // Initialize SharedPreferences and load history
+    _initPreferences();
     
     // Start animation
     _animationController.forward();
@@ -135,6 +135,74 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
     //     });
     //   }
     // });
+  }
+
+  // Initialize SharedPreferences
+  Future<void> _initPreferences() async {
+    try {
+      _prefs = await SharedPreferences.getInstance();
+      // Load history after preferences are initialized
+      await _loadMatrixHistory();
+    } catch (e) {
+      print('Error initializing SharedPreferences: $e');
+    }
+  }
+
+  // Load matrix history from SharedPreferences
+  Future<void> _loadMatrixHistory() async {
+    try {
+      if (_prefs == null) {
+        _prefs = await SharedPreferences.getInstance();
+      }
+      final historyJson = _prefs!.getString(_matrixHistoryKey);
+      if (historyJson != null && mounted) {
+        final historyList = jsonDecode(historyJson) as List<dynamic>;
+        _matrixHistory.clear();
+        if (historyList.isNotEmpty) {
+          for (final item in historyList) {
+            _matrixHistory.add(Map<String, dynamic>.from(item as Map));
+          }
+        }
+        print('After _loadMatrixHistory, in-memory history:');
+        for (var i = 0; i < _matrixHistory.length; i++) {
+          print('[$i]: ' + _matrixHistory[i].toString());
+        }
+        print('Raw storage: ' + (_prefs!.getString(_matrixHistoryKey) ?? 'null'));
+      } else {
+        _matrixHistory.clear();
+        print('Matrix history cleared from SharedPreferences (load)');
+      }
+    } catch (e) {
+      print('Error loading matrix history: $e');
+    }
+  }
+  
+  // Save current matrix history to SharedPreferences
+  Future<void> _saveMatrixHistory() async {
+    try {
+      if (_prefs == null) {
+        _prefs = await SharedPreferences.getInstance();
+      }
+      if (_matrixHistory.isEmpty) {
+        await _prefs!.remove(_matrixHistoryKey);
+        print('Matrix history cleared from SharedPreferences (save)');
+        return;
+      }
+      final historyToSave = _matrixHistory.map((item) {
+        final saveItem = Map<String, dynamic>.from(item);
+        if (item['timestamp'] is DateTime) {
+          saveItem['timestamp'] = (item['timestamp'] as DateTime).millisecondsSinceEpoch;
+        }
+        return saveItem;
+      }).toList();
+      print('Saving ${historyToSave.length} matrices to SharedPreferences using key: $_matrixHistoryKey');
+      final result = await _prefs!.setString(_matrixHistoryKey, jsonEncode(historyToSave));
+      print('Save result: $result');
+      final saved = _prefs!.getString(_matrixHistoryKey);
+      print('Verified saved data length: ${saved?.length ?? 0} characters');
+    } catch (e) {
+      print('Error saving matrix history: $e');
+    }
   }
 
   void _initializeControllers() {
@@ -271,27 +339,16 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
   }
 
   void _saveToHistory(List<List<double>> coefficients, List<double> constants) {
-    // Add current matrix to history
     final matrixData = {
       'coefficients': coefficients,
       'constants': constants,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
     };
-    
     _matrixHistory.insert(0, matrixData);
-    
-    // Trim history if it gets too large
     if (_matrixHistory.length > 10) {
       _matrixHistory.removeLast();
     }
-    
-    // Save to shared preferences
-    if (_prefs != null) {
-      _prefs!.setString(
-        _matrixHistoryKey,
-        jsonEncode(_matrixHistory),
-      );
-    }
+    _saveMatrixHistory();
   }
 
   void _showErrorSnackbar(String message) {
@@ -370,8 +427,8 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
     // Remove focus listeners first to prevent callbacks on unmounted widget
     FocusManager.instance.removeListener(() {});
     
-    // Save history before disposing
-    _saveCurrentMatrixToHistory();
+    // Do NOT save current matrix to history here!
+    // Only save to history after a successful solve.
     
     // Dispose controllers
     for (final row in _coefficientControllers) {
@@ -1277,12 +1334,13 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
   }
 
   // Show history dialog
-  void _showMatrixHistory() {
-    // Add current matrix to history before showing
-    if (_hasAnyValue()) {
-      _saveCurrentMatrixToHistory();
+  void _showMatrixHistory() async {
+    // Do NOT save current matrix to history here!
+    // Only show the dialog and load history from storage if needed
+    if (_prefs == null) {
+      await _initPreferences();
     }
-    
+    if (!mounted) return;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -1290,392 +1348,315 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
       builder: (context) {
         final colorScheme = Theme.of(context).colorScheme;
         final isDark = Theme.of(context).brightness == Brightness.dark;
-        
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.7,
-          decoration: BoxDecoration(
-            color: isDark ? colorScheme.surface : Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.r),
-              topRight: Radius.circular(20.r),
-            ),
-          ),
-          child: Column(
-            children: [
-              // Header
-              Container(
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: colorScheme.outline.withOpacity(0.1),
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(8.w),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primary.withOpacity(0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.history,
-                        color: colorScheme.primary,
-                        size: 20.w,
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Text(
-                      'Matrix History',
-                      style: TextStyle(
-                        color: colorScheme.onSurface,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.sp,
-                      ),
-                    ),
-                    Spacer(),
-                    IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.7,
+              decoration: BoxDecoration(
+                color: isDark ? colorScheme.surface : Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.r),
+                  topRight: Radius.circular(20.r),
                 ),
               ),
-              
-              // History list
-              Expanded(
-                child: _matrixHistory.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.history_toggle_off,
-                              size: 64.w,
-                              color: colorScheme.onSurface.withOpacity(0.2),
-                            ),
-                            SizedBox(height: 16.h),
-                            Text(
-                              'No history yet',
-                              style: TextStyle(
-                                color: colorScheme.onSurface.withOpacity(0.5),
-                                fontSize: 16.sp,
-                              ),
-                            ),
-                            SizedBox(height: 8.h),
-                            Text(
-                              'Previously entered matrices will appear here',
-                              style: TextStyle(
-                                color: colorScheme.onSurface.withOpacity(0.3),
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                          ],
+              child: Column(
+                children: [
+                  // Header
+                  Container(
+                    padding: EdgeInsets.all(16.w),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: colorScheme.outline.withOpacity(0.1),
+                          width: 1,
                         ),
-                      )
-                    : ListView.builder(
-                        padding: EdgeInsets.symmetric(vertical: 8.h),
-                        itemCount: _matrixHistory.length,
-                        itemBuilder: (context, index) {
-                          final historyItem = _matrixHistory[_matrixHistory.length - 1 - index];
-                          
-                          // Handle timestamp in different formats
-                          DateTime timestamp;
-                          if (historyItem['timestamp'] is int) {
-                            timestamp = DateTime.fromMillisecondsSinceEpoch(historyItem['timestamp']);
-                          } else if (historyItem['timestamp'] is DateTime) {
-                            timestamp = historyItem['timestamp'] as DateTime;
-                          } else {
-                            // Fallback to current time if timestamp is in an unexpected format
-                            timestamp = DateTime.now();
-                          }
-                          
-                          final timeString = '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}';
-                          final dateString = '${timestamp.day}/${timestamp.month}/${timestamp.year}';
-                          
-                          return Dismissible(
-                            key: Key('history_item_$index'),
-                            background: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.red.shade700,
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                              alignment: Alignment.centerRight,
-                              padding: EdgeInsets.only(right: 20.w),
-                              child: Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                                size: 24.w,
-                              ),
-                            ),
-                            direction: DismissDirection.endToStart,
-                            confirmDismiss: (direction) async {
-                              final isDark = Theme.of(context).brightness == Brightness.dark;
-                              
-                              return await _showDeleteConfirmationDialog(historyItem);
-                            },
-                            onDismissed: (direction) {
-                              // Remove from history list
-                              setState(() {
-                                _matrixHistory.removeAt(_matrixHistory.length - 1 - index);
-                              });
-                              
-                              // Save updated history
-                              _saveMatrixHistory();
-                            },
-                            // Add dismissThresholds for better control
-                            dismissThresholds: {DismissDirection.endToStart: 0.5},
-                            child: InkWell(
-                              onTap: () {
-                                // Load this matrix
-                                _loadMatrixFromHistory(historyItem);
-                                Navigator.pop(context);
-                              },
-                              onLongPress: () {
-                                // Provide haptic feedback
-                                HapticFeedback.mediumImpact();
-                                
-                                // Show a hint tooltip
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.swipe,
-                                          color: Colors.white,
-                                          size: 20.w,
-                                        ),
-                                        SizedBox(width: 12.w),
-                                        Text('Swipe left to delete this matrix'),
-                                      ],
-                                    ),
-                                    behavior: SnackBarBehavior.floating,
-                                    backgroundColor: colorScheme.tertiary,
-                                    duration: const Duration(seconds: 2),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.r),
-                                    ),
-                                    margin: EdgeInsets.all(16.w),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                                padding: EdgeInsets.all(12.w),
-                                decoration: BoxDecoration(
-                                  color: colorScheme.surface,
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  border: Border.all(
-                                    color: colorScheme.outline.withOpacity(0.2),
-                                    width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8.w),
+                          decoration: BoxDecoration(
+                            color: colorScheme.primary.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.history,
+                            color: colorScheme.primary,
+                            size: 20.w,
+                          ),
+                        ),
+                        SizedBox(width: 12.w),
+                        Text(
+                          'Matrix History',
+                          style: TextStyle(
+                            color: colorScheme.onSurface,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.sp,
+                          ),
+                        ),
+                        Spacer(),
+                        IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  // History list
+                  Expanded(
+                    child: Builder(
+                      builder: (context) {
+                        if (_matrixHistory.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.history_toggle_off,
+                                  size: 64.w,
+                                  color: colorScheme.onSurface.withOpacity(0.2),
+                                ),
+                                SizedBox(height: 16.h),
+                                Text(
+                                  'No history yet',
+                                  style: TextStyle(
+                                    color: colorScheme.onSurface.withOpacity(0.5),
+                                    fontSize: 16.sp,
                                   ),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Timestamp
-                                    Row(
+                                SizedBox(height: 8.h),
+                                Text(
+                                  'Previously entered matrices will appear here',
+                                  style: TextStyle(
+                                    color: colorScheme.onSurface.withOpacity(0.3),
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          return ListView.builder(
+                            padding: EdgeInsets.symmetric(vertical: 8.h),
+                            itemCount: _matrixHistory.length,
+                            itemBuilder: (context, index) {
+                              final historyItem = _matrixHistory[index];
+                              final uniqueKey = ValueKey(historyItem['timestamp'].toString());
+                              return Dismissible(
+                                key: uniqueKey,
+                                background: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade700,
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.only(right: 20.w),
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                    size: 24.w,
+                                  ),
+                                ),
+                                direction: DismissDirection.endToStart,
+                                confirmDismiss: (direction) async {
+                                  return await _showDeleteConfirmationDialog(historyItem);
+                                },
+                                onDismissed: (direction) async {
+                                  if (index >= 0 && index < _matrixHistory.length) {
+                                    _matrixHistory.removeAt(index);
+                                    await _saveMatrixHistory();
+                                    await _loadMatrixHistory();
+                                    setModalState(() {}); // Force modal to rebuild
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text('Matrix removed from history'),
+                                          duration: Duration(seconds: 2),
+                                          behavior: SnackBarBehavior.floating,
+                                        ),
+                                      );
+                                    }
+                                  } else {
+                                    print('Attempted to remove invalid index ' + index.toString() + ' from history of length ' + _matrixHistory.length.toString());
+                                  }
+                                },
+                                // Add dismissThresholds for better control
+                                dismissThresholds: {DismissDirection.endToStart: 0.5},
+                                child: InkWell(
+                                  onTap: () {
+                                    // Load this matrix
+                                    _loadMatrixFromHistory(historyItem);
+                                    Navigator.pop(context);
+                                  },
+                                  onLongPress: () {
+                                    // Provide haptic feedback
+                                    HapticFeedback.mediumImpact();
+                                    
+                                    // Show a hint tooltip
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.swipe,
+                                              color: Colors.white,
+                                              size: 20.w,
+                                            ),
+                                            SizedBox(width: 12.w),
+                                            Text('Swipe left to delete this matrix'),
+                                          ],
+                                        ),
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: colorScheme.tertiary,
+                                        duration: const Duration(seconds: 2),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.r),
+                                        ),
+                                        margin: EdgeInsets.all(16.w),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                                    padding: EdgeInsets.all(12.w),
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.surface,
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      border: Border.all(
+                                        color: colorScheme.outline.withOpacity(0.2),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Icon(
-                                          Icons.access_time,
-                                          size: 14.w,
-                                          color: colorScheme.onSurface.withOpacity(0.5),
-                                        ),
-                                        SizedBox(width: 6.w),
-                                        Text(
-                                          '$timeString • $dateString',
-                                          style: TextStyle(
-                                            color: colorScheme.onSurface.withOpacity(0.5),
-                                            fontSize: 12.sp,
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        // Hint to swipe
+                                        // Timestamp
                                         Row(
                                           children: [
                                             Icon(
-                                              Icons.swipe_left,
+                                              Icons.access_time,
                                               size: 14.w,
-                                              color: colorScheme.primary.withOpacity(0.6),
+                                              color: colorScheme.onSurface.withOpacity(0.5),
                                             ),
-                                            SizedBox(width: 4.w),
+                                            SizedBox(width: 6.w),
                                             Text(
-                                              'Delete',
+                                              '${_formatNumber(historyItem['timestamp'])}',
                                               style: TextStyle(
-                                                color: colorScheme.primary.withOpacity(0.6),
+                                                color: colorScheme.onSurface.withOpacity(0.5),
                                                 fontSize: 12.sp,
-                                                fontWeight: FontWeight.w500,
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 12.h),
-                                    
-                                    // Matrix preview
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        ...List.generate((historyItem['coefficients'] as List<dynamic>).length, (i) {
-                                          return Padding(
-                                            padding: EdgeInsets.only(bottom: 6.h),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                            Spacer(),
+                                            // Hint to swipe
+                                            Row(
                                               children: [
-                                                ...List.generate((historyItem['coefficients'][i] as List<dynamic>).length, (j) {
-                                                  return Container(
-                                                    width: 40.w,
-                                                    alignment: Alignment.center,
-                                                    margin: EdgeInsets.symmetric(horizontal: 2.w),
-                                                    padding: EdgeInsets.symmetric(vertical: 4.h),
-                                                    decoration: BoxDecoration(
-                                                      color: colorScheme.primary.withOpacity(0.05),
-                                                      borderRadius: BorderRadius.circular(4.r),
-                                                    ),
-                                                    child: Text(
-                                                      '${_formatNumber(historyItem['coefficients'][i][j])}',
-                                                      style: TextStyle(
-                                                        fontSize: 12.sp,
-                                                        color: colorScheme.onSurface,
-                                                      ),
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
-                                                    ),
-                                                  );
-                                                }),
-                                                Container(
-                                                  width: 20.w,
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    '=',
-                                                    style: TextStyle(
-                                                      fontSize: 12.sp,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
+                                                Icon(
+                                                  Icons.swipe_left,
+                                                  size: 14.w,
+                                                  color: colorScheme.primary.withOpacity(0.6),
                                                 ),
-                                                Container(
-                                                  width: 40.w,
-                                                  alignment: Alignment.center,
-                                                  margin: EdgeInsets.symmetric(horizontal: 2.w),
-                                                  padding: EdgeInsets.symmetric(vertical: 4.h),
-                                                  decoration: BoxDecoration(
-                                                    color: colorScheme.tertiary.withOpacity(0.05),
-                                                    borderRadius: BorderRadius.circular(4.r),
-                                                  ),
-                                                  child: Text(
-                                                    '${_formatNumber(historyItem['constants'][i])}',
-                                                    style: TextStyle(
-                                                      fontSize: 12.sp,
-                                                      color: colorScheme.tertiary,
-                                                    ),
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
+                                                SizedBox(width: 4.w),
+                                                Text(
+                                                  'Delete',
+                                                  style: TextStyle(
+                                                    color: colorScheme.primary.withOpacity(0.6),
+                                                    fontSize: 12.sp,
+                                                    fontWeight: FontWeight.w500,
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                          );
-                                        }),
+                                          ],
+                                        ),
+                                        SizedBox(height: 12.h),
+                                        
+                                        // Matrix preview
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            ...List.generate((historyItem['coefficients'] as List<dynamic>).length, (i) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(bottom: 6.h),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    ...List.generate((historyItem['coefficients'][i] as List<dynamic>).length, (j) {
+                                                      return Container(
+                                                        width: 40.w,
+                                                        alignment: Alignment.center,
+                                                        margin: EdgeInsets.symmetric(horizontal: 2.w),
+                                                        padding: EdgeInsets.symmetric(vertical: 4.h),
+                                                        decoration: BoxDecoration(
+                                                          color: colorScheme.primary.withOpacity(0.05),
+                                                          borderRadius: BorderRadius.circular(4.r),
+                                                        ),
+                                                        child: Text(
+                                                          '${_formatNumber(historyItem['coefficients'][i][j])}',
+                                                          style: TextStyle(
+                                                            fontSize: 12.sp,
+                                                            color: colorScheme.onSurface,
+                                                          ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow.ellipsis,
+                                                        ),
+                                                      );
+                                                    }),
+                                                    Container(
+                                                      width: 20.w,
+                                                      alignment: Alignment.center,
+                                                      child: Text(
+                                                        '=',
+                                                        style: TextStyle(
+                                                          fontSize: 12.sp,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width: 40.w,
+                                                      alignment: Alignment.center,
+                                                      margin: EdgeInsets.symmetric(horizontal: 2.w),
+                                                      padding: EdgeInsets.symmetric(vertical: 4.h),
+                                                      decoration: BoxDecoration(
+                                                        color: colorScheme.tertiary.withOpacity(0.05),
+                                                        borderRadius: BorderRadius.circular(4.r),
+                                                      ),
+                                                      child: Text(
+                                                        '${_formatNumber(historyItem['constants'][i])}',
+                                                        style: TextStyle(
+                                                          fontSize: 12.sp,
+                                                          color: colorScheme.tertiary,
+                                                        ),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }),
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           );
-                        },
-                      ),
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
-  }
-  
-  // Save current matrix to history
-  void _saveCurrentMatrixToHistory() {
-    // Extract current matrix values
-    final Map<String, dynamic> historyItem = {
-      'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'coefficients': List.generate(
-        _rows,
-        (i) => List.generate(
-          _cols,
-          (j) => _coefficientControllers[i][j].text.isEmpty
-              ? 0.0
-              : double.tryParse(_coefficientControllers[i][j].text) ?? 0.0,
-        ),
-      ),
-      'constants': List.generate(
-        _rows,
-        (i) => _constantControllers[i].text.isEmpty
-            ? 0.0
-            : double.tryParse(_constantControllers[i].text) ?? 0.0,
-      ),
-    };
-    
-    // Check if this matrix is already in history
-    bool isDuplicate = false;
-    for (final item in _matrixHistory) {
-      if (_compareMatrices(item['coefficients'], historyItem['coefficients']) &&
-          _compareVectors(item['constants'], historyItem['constants'])) {
-        isDuplicate = true;
-        break;
-      }
-    }
-    
-    // Add to history if not a duplicate
-    if (!isDuplicate) {
-      setState(() {
-        // Limit history to 10 items
-        if (_matrixHistory.length >= 10) {
-          _matrixHistory.removeAt(0);
-        }
-        _matrixHistory.add(historyItem);
-      });
-      
-      // Save to persistent storage
-      _saveMatrixHistory();
-    }
-  }
-  
-  // Helper to check if at least one field has a value
-  bool _hasAnyValue() {
-    for (int i = 0; i < _rows; i++) {
-      for (int j = 0; j < _cols; j++) {
-        if (_coefficientControllers[i][j].text.isNotEmpty) {
-          return true;
-        }
-      }
-      if (_constantControllers[i].text.isNotEmpty) {
-        return true;
-      }
-    }
-    return false;
-  }
-  
-  // Compare two matrices
-  bool _compareMatrices(List<dynamic> a, List<dynamic> b) {
-    if (a.length != b.length) return false;
-    for (int i = 0; i < a.length; i++) {
-      if (!_compareVectors(a[i], b[i])) return false;
-    }
-    return true;
-  }
-  
-  // Compare two vectors
-  bool _compareVectors(List<dynamic> a, List<dynamic> b) {
-    if (a.length != b.length) return false;
-    for (int i = 0; i < a.length; i++) {
-      if (a[i] != b[i]) return false;
-    }
-    return true;
   }
   
   // Load a matrix from history
@@ -1707,48 +1688,6 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
       _constantControllers[i].text = stringValue.endsWith('.0') 
           ? stringValue.substring(0, stringValue.length - 2) 
           : stringValue;
-    }
-  }
-
-  // Load matrix history from SharedPreferences
-  Future<void> _loadMatrixHistory() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      
-      final historyJson = prefs.getString(_matrixHistoryKey);
-      if (historyJson != null && mounted) {
-        setState(() {
-          final historyList = jsonDecode(historyJson) as List<dynamic>;
-          _matrixHistory.clear();
-          for (final item in historyList) {
-            _matrixHistory.add(Map<String, dynamic>.from(item as Map));
-          }
-        });
-      }
-    } catch (e) {
-      // Handle any errors gracefully
-      print('Error loading matrix history: $e');
-    }
-  }
-  
-  // Save current matrix history to SharedPreferences
-  Future<void> _saveMatrixHistory() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      
-      // Convert timestamp to save format
-      final historyToSave = _matrixHistory.map((item) {
-        final saveItem = Map<String, dynamic>.from(item);
-        if (item['timestamp'] is DateTime) {
-          saveItem['timestamp'] = (item['timestamp'] as DateTime).millisecondsSinceEpoch;
-        }
-        return saveItem;
-      }).toList();
-      
-      await prefs.setString(_matrixHistoryKey, jsonEncode(historyToSave));
-    } catch (e) {
-      // Handle any errors gracefully
-      print('Error saving matrix history: $e');
     }
   }
 
@@ -1784,8 +1723,8 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
   }
 
   // Show delete confirmation dialog
-  Future<bool?> _showDeleteConfirmationDialog(Map<String, dynamic> historyItem) async {
-    return await showDialog<bool>(
+  Future<bool> _showDeleteConfirmationDialog(Map<String, dynamic> historyItem) async {
+    final result = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
@@ -2157,6 +2096,9 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
         );
       },
     );
+    
+    // Return true if the user confirmed deletion, false otherwise
+    return result == true;
   }
 
   // Method to show info dialog about Gauss Elimination
