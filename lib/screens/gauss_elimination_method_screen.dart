@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +9,6 @@ import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/gauss_elimination_method.dart';
 import './gauss_elimination_solution_screen.dart';
-import 'package:flutter/rendering.dart';
 
 // Custom painter for grid pattern background
 class GridPainter extends CustomPainter {
@@ -39,7 +40,7 @@ class GridPainter extends CustomPainter {
 
 // Custom text editing controller to ensure backspace works properly
 class MatrixInputController extends TextEditingController {
-  MatrixInputController({String? text}) : super(text: text);
+  MatrixInputController({super.text});
 
   @override
   set value(TextEditingValue newValue) {
@@ -49,7 +50,7 @@ class MatrixInputController extends TextEditingController {
 }
 
 class GaussEliminationMethodScreen extends StatefulWidget {
-  const GaussEliminationMethodScreen({Key? key}) : super(key: key);
+  const GaussEliminationMethodScreen({super.key});
 
   @override
   State<GaussEliminationMethodScreen> createState() => _GaussEliminationMethodScreenState();
@@ -151,9 +152,7 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
   // Load matrix history from SharedPreferences
   Future<void> _loadMatrixHistory() async {
     try {
-      if (_prefs == null) {
-        _prefs = await SharedPreferences.getInstance();
-      }
+      _prefs ??= await SharedPreferences.getInstance();
       final historyJson = _prefs!.getString(_matrixHistoryKey);
       if (historyJson != null && mounted) {
         final historyList = jsonDecode(historyJson) as List<dynamic>;
@@ -165,9 +164,9 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
         }
         print('After _loadMatrixHistory, in-memory history:');
         for (var i = 0; i < _matrixHistory.length; i++) {
-          print('[$i]: ' + _matrixHistory[i].toString());
+          print('[$i]: ${_matrixHistory[i]}');
         }
-        print('Raw storage: ' + (_prefs!.getString(_matrixHistoryKey) ?? 'null'));
+        print('Raw storage: ${_prefs!.getString(_matrixHistoryKey) ?? 'null'}');
       } else {
         _matrixHistory.clear();
         print('Matrix history cleared from SharedPreferences (load)');
@@ -180,9 +179,7 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
   // Save current matrix history to SharedPreferences
   Future<void> _saveMatrixHistory() async {
     try {
-      if (_prefs == null) {
-        _prefs = await SharedPreferences.getInstance();
-      }
+      _prefs ??= await SharedPreferences.getInstance();
       if (_matrixHistory.isEmpty) {
         await _prefs!.remove(_matrixHistoryKey);
         print('Matrix history cleared from SharedPreferences (save)');
@@ -381,24 +378,6 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
     FocusScope.of(context).requestFocus(_firstFieldFocus);
   }
 
-  void _fillExampleValues() {
-    setState(() {
-      // Example for a 3x3 system
-      _coefficientControllers[0][0].text = '4';
-      _coefficientControllers[0][1].text = '1';
-      _coefficientControllers[0][2].text = '-1';
-      _coefficientControllers[1][0].text = '2';
-      _coefficientControllers[1][1].text = '5';
-      _coefficientControllers[1][2].text = '2';
-      _coefficientControllers[2][0].text = '1';
-      _coefficientControllers[2][1].text = '2';
-      _coefficientControllers[2][2].text = '4';
-      
-      _constantControllers[0].text = '8';
-      _constantControllers[1].text = '3';
-      _constantControllers[2].text = '11';
-    });
-  }
 
   // Fill matrix with random values
   void _fillRandomValues() {
@@ -725,7 +704,7 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
                     fontSize: 16.sp,
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 // History button
                 IconButton(
                   onPressed: _showMatrixHistory,
@@ -878,7 +857,7 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
                           SizedBox(width: 8.w),
                           
                           // Constant input
-                          Container(
+                          SizedBox(
                             width: 60.w,
                             child: _buildMatrixField(
                               controller: _constantControllers[i],
@@ -1395,9 +1374,9 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
                             fontSize: 18.sp,
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
-                          icon: Icon(Icons.close),
+                          icon: const Icon(Icons.close),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
@@ -1471,7 +1450,7 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
                                     setModalState(() {}); // Force modal to rebuild
                                     if (mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
+                                        const SnackBar(
                                           content: Text('Matrix removed from history'),
                                           duration: Duration(seconds: 2),
                                           behavior: SnackBarBehavior.floating,
@@ -1479,11 +1458,11 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
                                       );
                                     }
                                   } else {
-                                    print('Attempted to remove invalid index ' + index.toString() + ' from history of length ' + _matrixHistory.length.toString());
+                                    print('Attempted to remove invalid index $index from history of length ${_matrixHistory.length}');
                                   }
                                 },
                                 // Add dismissThresholds for better control
-                                dismissThresholds: {DismissDirection.endToStart: 0.5},
+                                dismissThresholds: const {DismissDirection.endToStart: 0.5},
                                 child: InkWell(
                                   onTap: () {
                                     // Load this matrix
@@ -1505,7 +1484,7 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
                                               size: 20.w,
                                             ),
                                             SizedBox(width: 12.w),
-                                            Text('Swipe left to delete this matrix'),
+                                            const Text('Swipe left to delete this matrix'),
                                           ],
                                         ),
                                         behavior: SnackBarBehavior.floating,
@@ -1542,13 +1521,13 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
                                             ),
                                             SizedBox(width: 6.w),
                                             Text(
-                                              '${_formatNumber(historyItem['timestamp'])}',
+                                              _formatNumber(historyItem['timestamp']),
                                               style: TextStyle(
                                                 color: colorScheme.onSurface.withOpacity(0.5),
                                                 fontSize: 12.sp,
                                               ),
                                             ),
-                                            Spacer(),
+                                            const Spacer(),
                                             // Hint to swipe
                                             Row(
                                               children: [
@@ -1593,7 +1572,7 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
                                                           borderRadius: BorderRadius.circular(4.r),
                                                         ),
                                                         child: Text(
-                                                          '${_formatNumber(historyItem['coefficients'][i][j])}',
+                                                          _formatNumber(historyItem['coefficients'][i][j]),
                                                           style: TextStyle(
                                                             fontSize: 12.sp,
                                                             color: colorScheme.onSurface,
@@ -1624,7 +1603,7 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
                                                         borderRadius: BorderRadius.circular(4.r),
                                                       ),
                                                       child: Text(
-                                                        '${_formatNumber(historyItem['constants'][i])}',
+                                                        _formatNumber(historyItem['constants'][i]),
                                                         style: TextStyle(
                                                           fontSize: 12.sp,
                                                           color: colorScheme.tertiary,
@@ -1938,7 +1917,7 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
                                                         borderRadius: BorderRadius.circular(3.r),
                                                       ),
                                                       child: Text(
-                                                        '${_formatNumber(historyItem['coefficients'][i][j])}',
+                                                        _formatNumber(historyItem['coefficients'][i][j]),
                                                         style: TextStyle(
                                                           fontSize: 9.sp,
                                                           color: Colors.white.withOpacity(0.9),
@@ -1971,7 +1950,7 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
                                                       borderRadius: BorderRadius.circular(3.r),
                                                     ),
                                                     child: Text(
-                                                      '${_formatNumber(historyItem['constants'][i])}',
+                                                      _formatNumber(historyItem['constants'][i]),
                                                       style: TextStyle(
                                                         fontSize: 9.sp,
                                                         color: Colors.white,
@@ -2175,7 +2154,7 @@ class _GaussEliminationMethodScreenState extends State<GaussEliminationMethodScr
               // Make the content scrollable to avoid overflow
               Flexible(
                 child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 
 class CramerStep {
   final List<List<double>> determinantMatrix;
@@ -107,8 +106,11 @@ class CramerMethod {
   
   /// Solves a system of linear equations using Cramer's rule
   /// Returns a map containing:
+  // ignore: unintended_html_in_doc_comment
   /// - 'solution': List<double> containing the solution vector [x1, x2, x3, ...]
+  // ignore: unintended_html_in_doc_comment
   /// - 'determinants': Map<String, double> containing the determinants used in calculation
+  // ignore: unintended_html_in_doc_comment
   /// - 'steps': List<String> containing the solution steps for display
   static Map<String, dynamic> solve({
     required List<List<double>> coefficients,
@@ -140,6 +142,7 @@ class CramerMethod {
         constants,
         i,
       );
+      // ignore: non_constant_identifier_names
       double Di = calculateDeterminant(modifiedMatrix);
       determinants['D${i + 1}'] = Di;
       solution[i] = Di / D;

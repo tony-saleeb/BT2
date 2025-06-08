@@ -1,7 +1,5 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, avoid_print
 
-import 'dart:math';
-import 'package:flutter/foundation.dart';
 
 class GaussJordanStep {
   final List<List<double>> matrix;

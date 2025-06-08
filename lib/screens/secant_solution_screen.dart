@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'dart:math' show pow;
-import '../util/number_formatter.dart';
 
 class SecantSolutionScreen extends StatefulWidget {
   final List<Map<String, dynamic>> results;
@@ -1962,32 +1960,9 @@ class _SecantSolutionScreenState extends State<SecantSolutionScreen> with Ticker
     );
   }
 
-  String _buildErrorReduction() {
-    if (widget.results.length < 2) {
-      return '--';
-    }
-
-    // Get the first result with a non-null error
-    Map<String, dynamic>? firstWithError;
-    for (var result in widget.results) {
-      if (result['ea'] != null) {
-        firstWithError = result;
-        break;
-      }
-    }
-
-    final lastError = widget.results.last['ea'];
-    if (firstWithError?['ea'] == null || lastError == null) {
-      return '--';
-    }
-
-    return '${_formatNumber(firstWithError!['ea'])}% → ${_formatNumber(lastError)}%';
-  }
 
   Widget _buildDebugView(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final size = MediaQuery.of(context).size;
-    final isSmallScreen = size.width < 600;
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -2179,7 +2154,7 @@ class _SecantSolutionScreenState extends State<SecantSolutionScreen> with Ticker
                 const SizedBox(height: 20),
               ],
             );
-          }).toList(),
+          }),
         ],
       ),
     );

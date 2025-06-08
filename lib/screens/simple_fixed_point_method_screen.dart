@@ -429,7 +429,6 @@ class _SimpleFixedPointMethodScreenState extends State<SimpleFixedPointMethodScr
   final _constantController = TextEditingController();
   
   bool _useError = true;
-  bool _isVariableMode = true;
   int _decimalPlaces = 3;
   List<Map<String, dynamic>> _terms = [];
 

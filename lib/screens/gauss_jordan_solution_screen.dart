@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,11 +12,11 @@ class GaussJordanSolutionScreen extends StatefulWidget {
   final int decimalPlaces;
 
   const GaussJordanSolutionScreen({
-    Key? key,
+    super.key,
     required this.result,
     required this.usePartialPivoting,
     required this.decimalPlaces,
-  }) : super(key: key);
+  });
 
   @override
   State<GaussJordanSolutionScreen> createState() =>
@@ -24,7 +26,7 @@ class GaussJordanSolutionScreen extends StatefulWidget {
 class _GaussJordanSolutionScreenState extends State<GaussJordanSolutionScreen> with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   int _currentTabIndex = 0;
-  bool _shouldRound = true;
+  final bool _shouldRound = true;
   bool _disposed = false;  // Track disposal state
 
   @override
@@ -107,7 +109,7 @@ class _GaussJordanSolutionScreenState extends State<GaussJordanSolutionScreen> w
               shaderCallback: (bounds) => LinearGradient(
                 colors: [colorScheme.primary, colorScheme.tertiary],
               ).createShader(bounds),
-              child: Text(
+              child: const Text(
                 'SOLUTION',
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
@@ -188,7 +190,7 @@ class _GaussJordanSolutionScreenState extends State<GaussJordanSolutionScreen> w
                                 children: [
                                   Icon(Icons.check_circle_outline, size: 18.w),
                                   SizedBox(width: 8.w),
-                                  Text('Result'),
+                                  const Text('Result'),
                                 ],
                               ),
                             ),
@@ -198,7 +200,7 @@ class _GaussJordanSolutionScreenState extends State<GaussJordanSolutionScreen> w
                                 children: [
                                   Icon(Icons.analytics_outlined, size: 18.w),
                                   SizedBox(width: 8.w),
-                                  Text('Steps'),
+                                  const Text('Steps'),
                                 ],
                               ),
                             ),
@@ -208,7 +210,7 @@ class _GaussJordanSolutionScreenState extends State<GaussJordanSolutionScreen> w
                                 children: [
                                   Icon(Icons.verified_outlined, size: 18.w),
                                   SizedBox(width: 8.w),
-                                  Text('Verify'),
+                                  const Text('Verify'),
                                 ],
                               ),
                             ),
@@ -258,7 +260,6 @@ class _GaussJordanSolutionScreenState extends State<GaussJordanSolutionScreen> w
       return _buildErrorMessage(errorMsg, colorScheme);
     }
     
-    final n = widget.result.solution.length;
     
     return SingleChildScrollView(
       padding: EdgeInsets.all(16.w),
@@ -328,7 +329,7 @@ class _GaussJordanSolutionScreenState extends State<GaussJordanSolutionScreen> w
                         ),
                       ),
                       
-                      Spacer(),
+                      const Spacer(),
                     ],
                   ),
                   
@@ -369,7 +370,7 @@ class _GaussJordanSolutionScreenState extends State<GaussJordanSolutionScreen> w
                           colorScheme.tertiary.withOpacity(0.6),
                           Colors.transparent,
                         ],
-                        stops: [0.0, 0.6, 1.0],
+                        stops: const [0.0, 0.6, 1.0],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
@@ -906,10 +907,9 @@ class _GaussJordanSolutionScreenState extends State<GaussJordanSolutionScreen> w
           // Describe the search for maximum element
           for (int r = pivotCol; r < previousStep.matrix.length; r++) {
             double value = previousStep.matrix[r][pivotCol];
-            double absValue = value.abs();
+            value.abs();
             if (r == row1 || r == row2) {
-              operationDescription += '• Row ${r + 1}: |${_formatNumber(value)}|' + 
-                  (r == (absVal1 > absVal2 ? row1 : row2) ? ' ← Maximum element found' : '') + '\n';
+              operationDescription += '• Row ${r + 1}: |${_formatNumber(value)}|${r == (absVal1 > absVal2 ? row1 : row2) ? ' ← Maximum element found' : ''}\n';
             }
           }
           
@@ -966,7 +966,6 @@ class _GaussJordanSolutionScreenState extends State<GaussJordanSolutionScreen> w
               int cols = math.min(previousStep.matrix[0].length, pivotCol + maxDetailCols + 1);
               for (int col = pivotCol; col < cols; col++) {
                 double origValue = previousStep.matrix[row][col];
-                double subtractValue = factor * previousStep.matrix[pivotRow][col];
                 double newValue = currentStep.matrix[row][col];
                 operationDescription += '\n   a${row + 1}${col + 1} = (${_formatNumber(origValue)}) - (${_formatNumber(factor)} × ${_formatNumber(previousStep.matrix[pivotRow][col])}) = ${_formatNumber(newValue)}';
               }
@@ -1753,8 +1752,8 @@ class _GaussJordanSolutionScreenState extends State<GaussJordanSolutionScreen> w
                 onPressed: () {
                   _tabController.animateTo(1); // Switch to Steps tab
                 },
-                icon: Icon(Icons.analytics_outlined),
-                label: Text('View Solution Steps'),
+                icon: const Icon(Icons.analytics_outlined),
+                label: const Text('View Solution Steps'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: colorScheme.secondary,
                   foregroundColor: Colors.white,

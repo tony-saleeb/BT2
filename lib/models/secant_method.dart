@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, avoid_print, unnecessary_string_interpolations, prefer_adjacent_string_concatenation
 
 import 'dart:math';
 
@@ -57,7 +57,6 @@ class SecantMethod {
     }
 
     // Direct test for x³-2x-5
-    double directResult = pow(x, 3) - 2*x - 5;
 
     double result = 0.0;
     
@@ -96,29 +95,6 @@ class SecantMethod {
         result += coefficient;
       }
     }
-    
-    // Debug: Compare with direct calculation for specific function
-    if (terms.length >= 3) {
-      // Check if this looks like x³-2x-5
-      bool hasX3 = false;
-      bool hasX1 = false;
-      bool hasConstant = false;
-      
-      for (var term in terms) {
-        int power = term['power'] ?? 0;
-        bool isVariable = term['isVariable'] ?? false;
-        double coefficient = term['coefficient'] ?? 0.0;
-        
-        if (isVariable && power == 3 && coefficient == 1) hasX3 = true;
-        if (isVariable && power == 1 && coefficient == -2) hasX1 = true;
-        if (!isVariable && coefficient == -5) hasConstant = true;
-      }
-      
-      if (hasX3 && hasX1 && hasConstant) {
-        print('x³-2x-5 test at x=$x: Parsed result=$result, Direct result=$directResult');
-      }
-    }
-    
     return result;
   }
 
