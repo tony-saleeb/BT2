@@ -46,6 +46,12 @@ The application is designed to:
 3. Provide detailed breakdowns of solution steps for educational purposes
 4. Serve as a practical tool for solving numerical problems
 
+## Download & Test the App
+
+You can download and test the latest major APK release here:
+
+[Download APK v1.0.0](https://github.com/tony-saleeb/BT2/releases/download/v1.0.0/BT2.apk)
+
 ## Getting Started with Development
 
 This project is built with Flutter. To get started:
