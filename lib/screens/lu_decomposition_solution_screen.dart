@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,11 +9,11 @@ class LUDecompositionSolutionScreen extends StatefulWidget {
   final int decimalPlaces;
 
   const LUDecompositionSolutionScreen({
-    Key? key,
+    super.key,
     required this.result,
     required this.usePartialPivoting,
     required this.decimalPlaces,
-  }) : super(key: key);
+  });
 
   @override
   State<LUDecompositionSolutionScreen> createState() => _LUDecompositionSolutionScreenState();
@@ -23,7 +21,6 @@ class LUDecompositionSolutionScreen extends StatefulWidget {
 
 class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  int _currentTabIndex = 0;
   bool _useRoundedValues = false;
   bool _disposed = false;
 
@@ -101,7 +98,7 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
               shaderCallback: (bounds) => LinearGradient(
                 colors: [colorScheme.primary, colorScheme.tertiary],
               ).createShader(bounds),
-              child: Text(
+              child: const Text(
                 'SOLUTION',
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
@@ -182,7 +179,7 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
                                 children: [
                                   Icon(Icons.check_circle_outline, size: 18.w),
                                   SizedBox(width: 8.w),
-                                  Text('Result'),
+                                  const Text('Result'),
                                 ],
                               ),
                             ),
@@ -192,7 +189,7 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
                                 children: [
                                   Icon(Icons.analytics_outlined, size: 18.w),
                                   SizedBox(width: 8.w),
-                                  Text('Steps'),
+                                  const Text('Steps'),
                                 ],
                               ),
                             ),
@@ -202,7 +199,7 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
                                 children: [
                                   Icon(Icons.verified_outlined, size: 18.w),
                                   SizedBox(width: 8.w),
-                                  Text('Verify'),
+                                  const Text('Verify'),
                                 ],
                               ),
                             ),
@@ -239,8 +236,6 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
       return _buildErrorMessage('No solution available', colorScheme);
     }
     
-    final n = widget.result.solution.length;
-    
     return SingleChildScrollView(
       padding: EdgeInsets.all(16.w),
       physics: const BouncingScrollPhysics(),
@@ -259,110 +254,8 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
   }
   
   // L matrix tab showing lower triangular matrix
-  Widget _buildLMatrixTab(ColorScheme colorScheme, bool isDark) {
-    if (!widget.result.isSolved || widget.result.lMatrix.isEmpty) {
-      return _buildErrorMessage('L matrix not available', colorScheme);
-    }
-    
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Matrix header
-          _buildSectionHeader(
-            'Lower Triangular Matrix (L)',
-            'The matrix containing multipliers used during elimination',
-            Icons.arrow_downward_rounded,
-            colorScheme,
-          ),
-          
-          SizedBox(height: 16.h),
-          
-          // Show matrix
-          Card(
-            elevation: 1,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(16.w),
-              child: _buildMatrixDisplay(
-                widget.result.lMatrix, 
-                colorScheme,
-                showRowNumbers: true,
-                showColNumbers: false,
-                highlightDiagonal: true,
-              ),
-            ),
-          ),
-          
-          SizedBox(height: 24.h),
-          
-          _buildInfoCard(
-            colorScheme,
-            title: 'About L Matrix',
-            content: 'In LU decomposition, L is a lower triangular matrix with 1\'s on the diagonal. It captures the multipliers used during elimination that would transform A into U.',
-            icon: Icons.info_outline,
-          ),
-        ],
-      ),
-    );
-  }
   
   // U matrix tab showing upper triangular matrix
-  Widget _buildUMatrixTab(ColorScheme colorScheme, bool isDark) {
-    if (!widget.result.isSolved || widget.result.uMatrix.isEmpty) {
-      return _buildErrorMessage('U matrix not available', colorScheme);
-    }
-    
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Matrix header
-          _buildSectionHeader(
-            'Upper Triangular Matrix (U)',
-            'The result of the forward elimination phase',
-            Icons.arrow_upward_rounded,
-            colorScheme,
-          ),
-          
-          SizedBox(height: 16.h),
-          
-          // Show matrix
-          Card(
-            elevation: 1,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(16.w),
-              child: _buildMatrixDisplay(
-                widget.result.uMatrix, 
-                colorScheme,
-                showRowNumbers: true,
-                showColNumbers: false,
-                highlightDiagonal: true,
-              ),
-            ),
-          ),
-          
-          SizedBox(height: 24.h),
-          
-          _buildInfoCard(
-            colorScheme,
-            title: 'About U Matrix',
-            content: 'The U matrix is an upper triangular matrix that results from the decomposition. We can solve Ux = y through back substitution to find our solution vector.',
-            icon: Icons.info_outline,
-          ),
-        ],
-      ),
-    );
-  }
   
   // Widget to display final result with solution vector
   Widget _buildResultCard(ColorScheme colorScheme) {
@@ -415,7 +308,7 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
                         ),
                       ),
                       
-                      Spacer(),
+                      const Spacer(),
                     ],
                   ),
                   
@@ -456,7 +349,7 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
                           colorScheme.tertiary.withOpacity(0.6),
                           Colors.transparent,
                         ],
-                        stops: [0.0, 0.6, 1.0],
+                        stops: const [0.0, 0.6, 1.0],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
@@ -1205,7 +1098,7 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
                   // Side by side L and U matrices
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -1285,7 +1178,7 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
                   // Show vector B
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -1375,12 +1268,12 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
                                 children: [
                                   TextSpan(
                                     text: 'c${i+1} = ',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                   TextSpan(
-                                    text: '${_formatNumber(vectorY![i])}',
+                                    text: _formatNumber(vectorY![i]),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: colorScheme.secondary,
@@ -1455,12 +1348,12 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
                                 children: [
                                   TextSpan(
                                     text: 'x${i+1} = ',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                   TextSpan(
-                                    text: '${_formatNumber(vectorX[i])}',
+                                    text: _formatNumber(vectorX[i]),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: colorScheme.tertiary,
@@ -1728,7 +1621,7 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
                             children: [
                               TextSpan(text: 'L${i+1},${k+1} = '),
                               TextSpan(
-                                text: '${_formatNumber(matrixL[i][k])}',
+                                text: _formatNumber(matrixL[i][k]),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: colorScheme.secondary,
@@ -1835,14 +1728,6 @@ class _LUDecompositionSolutionScreenState extends State<LUDecompositionSolutionS
     if (!widget.result.isSolved) {
       return _buildErrorMessage('Verification not available', colorScheme);
     }
-    
-    // Get matrices and vectors for verification
-    final matrixA = widget.result.originalMatrix;
-    final matrixL = widget.result.lMatrix;
-    final matrixU = widget.result.uMatrix;
-    final vectorB = widget.result.originalB;
-    final vectorC = widget.result.yVector; // The intermediate vector (previously called y)
-    final vectorX = widget.result.solution;
     
     return SingleChildScrollView(
       padding: EdgeInsets.all(16.w),

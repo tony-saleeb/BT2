@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
@@ -5,10 +7,8 @@ import 'dart:math' as math;
 import 'dart:convert';
 import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
 import '../models/gauss_jordan_method.dart';
 import './gauss_jordan_solution_screen.dart';
-import 'package:flutter/rendering.dart';
 
 // Custom painter for grid pattern background
 class GridPainter extends CustomPainter {
@@ -40,7 +40,7 @@ class GridPainter extends CustomPainter {
 
 // Custom text editing controller to ensure backspace works properly
 class MatrixInputController extends TextEditingController {
-  MatrixInputController({String? text}) : super(text: text);
+  MatrixInputController({super.text});
 
   @override
   set value(TextEditingValue newValue) {
@@ -50,7 +50,7 @@ class MatrixInputController extends TextEditingController {
 }
 
 class GaussJordanMethodScreen extends StatefulWidget {
-  const GaussJordanMethodScreen({Key? key}) : super(key: key);
+  const GaussJordanMethodScreen({super.key});
 
   @override
   State<GaussJordanMethodScreen> createState() => _GaussJordanMethodScreenState();
@@ -121,16 +121,6 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
   }
 
   // Generate a valid example system when needed
-  void _generateValidExampleSystem() {
-    // Create an identity matrix with reasonable constants
-    for (int i = 0; i < _rows; i++) {
-      for (int j = 0; j < _cols; j++) {
-        _coefficientControllers[i][j].text = (i == j) ? '1' : '0';
-      }
-      // Use simple sequential constants: 2, 4, 6
-      _constantControllers[i].text = '${(i + 1) * 2}';
-    }
-  }
 
   void _initializeControllers() {
     // Clear any existing controllers
@@ -461,7 +451,7 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
                     fontSize: 16.sp,
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 // History button
                 IconButton(
                   onPressed: _showMatrixHistory,
@@ -614,7 +604,7 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
                           SizedBox(width: 8.w),
                           
                           // Constant input
-                          Container(
+                          SizedBox(
                             width: 60.w,
                             child: _buildMatrixField(
                               controller: _constantControllers[i],
@@ -1682,9 +1672,9 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
                             fontSize: 18.sp,
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
-                          icon: Icon(Icons.close),
+                          icon: const Icon(Icons.close),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
@@ -1786,7 +1776,7 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
                                               size: 20.w,
                                             ),
                                             SizedBox(width: 12.w),
-                                            Text('Swipe left to delete this matrix'),
+                                            const Text('Swipe left to delete this matrix'),
                                           ],
                                         ),
                                         behavior: SnackBarBehavior.floating,
@@ -1829,7 +1819,7 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
                                                 fontSize: 12.sp,
                                               ),
                                             ),
-                                            Spacer(),
+                                            const Spacer(),
                                             Row(
                                               children: [
                                                 Icon(
@@ -1872,7 +1862,7 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
                                                           borderRadius: BorderRadius.circular(4.r),
                                                         ),
                                                         child: Text(
-                                                          '${_formatNumber(historyItem['coefficients'][i][j])}',
+                                                          _formatNumber(historyItem['coefficients'][i][j]),
                                                           style: TextStyle(
                                                             fontSize: 12.sp,
                                                             color: colorScheme.onSurface,
@@ -1903,7 +1893,7 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
                                                         borderRadius: BorderRadius.circular(4.r),
                                                       ),
                                                       child: Text(
-                                                        '${_formatNumber(historyItem['constants'][i])}',
+                                                        _formatNumber(historyItem['constants'][i]),
                                                         style: TextStyle(
                                                           fontSize: 12.sp,
                                                           color: colorScheme.tertiary,
@@ -1943,7 +1933,6 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
     return await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
-        final colorScheme = Theme.of(context).colorScheme;
         return Dialog(
           backgroundColor: Colors.transparent,
           insetPadding: EdgeInsets.zero,
@@ -2155,7 +2144,7 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
                                                         borderRadius: BorderRadius.circular(3.r),
                                                       ),
                                                       child: Text(
-                                                        '${_formatNumber(historyItem['coefficients'][i][j])}',
+                                                        _formatNumber(historyItem['coefficients'][i][j]),
                                                         style: TextStyle(
                                                           fontSize: 9.sp,
                                                           color: Colors.white.withOpacity(0.9),
@@ -2187,7 +2176,7 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
                                                       borderRadius: BorderRadius.circular(3.r),
                                                     ),
                                                     child: Text(
-                                                      '${_formatNumber(historyItem['constants'][i])}',
+                                                      _formatNumber(historyItem['constants'][i]),
                                                       style: TextStyle(
                                                         fontSize: 9.sp,
                                                         color: Colors.white,
@@ -2385,7 +2374,7 @@ class _GaussJordanMethodScreenState extends State<GaussJordanMethodScreen> with 
               // Make the content scrollable to avoid overflow
               Flexible(
                 child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

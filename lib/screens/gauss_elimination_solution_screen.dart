@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,11 +11,11 @@ class GaussEliminationSolutionScreen extends StatefulWidget {
   final int decimalPlaces;
 
   const GaussEliminationSolutionScreen({
-    Key? key,
+    super.key,
     required this.result,
     required this.useMultipliers,
     required this.decimalPlaces,
-  }) : super(key: key);
+  });
 
   @override
   State<GaussEliminationSolutionScreen> createState() =>
@@ -112,7 +114,7 @@ class _GaussEliminationSolutionScreenState extends State<GaussEliminationSolutio
               shaderCallback: (bounds) => LinearGradient(
                 colors: [colorScheme.primary, colorScheme.tertiary],
               ).createShader(bounds),
-              child: Text(
+              child: const Text(
                 'SOLUTION',
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
@@ -192,7 +194,7 @@ class _GaussEliminationSolutionScreenState extends State<GaussEliminationSolutio
                                 children: [
                                   Icon(Icons.check_circle_outline, size: 18.w),
                                   SizedBox(width: 8.w),
-                                  Text('Result'),
+                                  const Text('Result'),
                                 ],
                               ),
                             ),
@@ -202,7 +204,7 @@ class _GaussEliminationSolutionScreenState extends State<GaussEliminationSolutio
                                 children: [
                                   Icon(Icons.timeline, size: 18.w),
                                   SizedBox(width: 8.w),
-                                  Text('Steps'),
+                                  const Text('Steps'),
                                 ],
                               ),
                             ),
@@ -212,7 +214,7 @@ class _GaussEliminationSolutionScreenState extends State<GaussEliminationSolutio
                                 children: [
                                   Icon(Icons.grid_on_rounded, size: 18.w),
                                   SizedBox(width: 8.w),
-                                  Text('Matrix'),
+                                  const Text('Matrix'),
                                 ],
                               ),
                             ),
@@ -324,7 +326,7 @@ class _GaussEliminationSolutionScreenState extends State<GaussEliminationSolutio
                         ),
                       ),
                       
-                      Spacer(),
+                      const Spacer(),
                     ],
                   ),
                   
@@ -365,7 +367,7 @@ class _GaussEliminationSolutionScreenState extends State<GaussEliminationSolutio
                           colorScheme.tertiary.withOpacity(0.6),
                           Colors.transparent,
                         ],
-                        stops: [0.0, 0.6, 1.0],
+                        stops: const [0.0, 0.6, 1.0],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
@@ -883,7 +885,6 @@ class _GaussEliminationSolutionScreenState extends State<GaussEliminationSolutio
         final numCols = prevMatrix[0].length;
         for (int col = pivotRow; col < numCols; col++) {
           double origValue = prevMatrix[operationRow][col];
-          double subtractValue = multiplier * prevMatrix[pivotRow][col];
           double newValue = stepData['matrix'][operationRow][col];
           
           operationDescription += '\n\na${operationRow + 1}${col + 1} = (${_formatNumber(origValue)}) - (${_formatNumber(multiplier)} × ${_formatNumber(prevMatrix[pivotRow][col])}) = ${_formatNumber(newValue)}';
@@ -1194,7 +1195,7 @@ class _GaussEliminationSolutionScreenState extends State<GaussEliminationSolutio
     } else if (matrix is List && matrix.isNotEmpty && matrix[0] is List) {
       // Try to convert it to the right format
       try {
-        matrixData = (matrix as List).map((row) {
+        matrixData = (matrix).map((row) {
           if (row is List) {
             return List<double>.from(row);
           }
@@ -1356,8 +1357,8 @@ class _GaussEliminationSolutionScreenState extends State<GaussEliminationSolutio
             SizedBox(height: 24.h),
             ElevatedButton.icon(
               onPressed: () => Navigator.pop(context),
-              icon: Icon(Icons.arrow_back),
-              label: Text('Go Back'),
+              icon: const Icon(Icons.arrow_back),
+              label: const Text('Go Back'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: colorScheme.primary,
                 foregroundColor: Colors.white,
@@ -1374,52 +1375,4 @@ class _GaussEliminationSolutionScreenState extends State<GaussEliminationSolutio
   }
 
   // Helper method to build stats item
-  Widget _buildStatItem(
-    ColorScheme colorScheme,
-    IconData icon,
-    String label,
-    String value,
-  ) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceVariant.withOpacity(0.4),
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: 16.w,
-            color: colorScheme.onSurfaceVariant.withOpacity(0.7),
-          ),
-          SizedBox(width: 8.w),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                label,
-                style: GoogleFonts.manrope(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.onSurfaceVariant.withOpacity(0.7),
-                ),
-              ),
-              SizedBox(height: 2.h),
-              Text(
-                value,
-                style: GoogleFonts.manrope(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 } 

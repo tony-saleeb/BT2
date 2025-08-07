@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'dart:ui';
 import 'package:flutter/services.dart'; // Import for HapticFeedback
 import 'providers/theme_provider.dart';
 import 'screens/chapter_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/splash_screen.dart';
 import 'dart:math' as math;
-import 'package:flutter/rendering.dart';
 
 
 void main() async {
@@ -448,7 +446,7 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
           BoxShadow(
                     color: colorScheme.shadow.withOpacity(0.12),
                     blurRadius: 12,
-                    offset: Offset(0, 6), // Balanced shadow
+                    offset: const Offset(0, 6), // Balanced shadow
             spreadRadius: 0,
                   ),
                   // Glow effect
@@ -457,7 +455,7 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                       color: Color(gradientColors[0]).withOpacity(0.3),
                       blurRadius: 25,
                       spreadRadius: 1,
-                      offset: Offset(0, 8), // More balanced shadow offset
+                      offset: const Offset(0, 8), // More balanced shadow offset
           ),
         ],
       ),
@@ -529,7 +527,7 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                                     BoxShadow(
                                       color: Colors.black.withOpacity(0.1),
                                       blurRadius: 5,
-                                      offset: Offset(0, 2),
+                                      offset: const Offset(0, 2),
                                     ),
                                   ],
                                 ),
@@ -556,7 +554,7 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                                           BoxShadow(
                                             color: Colors.black.withOpacity(0.2),
                                             blurRadius: 4,
-                                            offset: Offset(0, 2),
+                                            offset: const Offset(0, 2),
                                           ),
                                         ],
                                       ),
@@ -615,7 +613,7 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                                   shadows: [
                                     Shadow(
                                       color: Colors.black.withOpacity(0.3),
-                                      offset: Offset(0, 1),
+                                      offset: const Offset(0, 1),
                                       blurRadius: 3,
                                     ),
                                   ],
@@ -668,7 +666,7 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
                                         Colors.black.withOpacity(0.7),
                                       ],
                                     ),
-                                    borderRadius: BorderRadius.only(
+                                    borderRadius: const BorderRadius.only(
                                       bottomLeft: Radius.circular(28),
                                       bottomRight: Radius.circular(28),
                                     ),
@@ -929,7 +927,6 @@ class FuturisticPatternPainter extends CustomPainter {
     final totalDistance = (functionY - rootY).abs();
     
     while (distance < totalDistance) {
-      final startPoint = rootY + distance * (functionY - rootY) / totalDistance;
       distance += dashLength;
       final endPoint = distance < totalDistance 
           ? rootY + distance * (functionY - rootY) / totalDistance
@@ -1016,7 +1013,7 @@ class FuturisticPatternPainter extends CustomPainter {
           
           textPaint.text = TextSpan(
             text: value,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 10,
               fontWeight: FontWeight.bold,

@@ -1,18 +1,20 @@
+import 'dart:async';
+import 'dart:math' as math;
+import 'dart:ui' show lerpDouble;
+
 import 'package:flutter/material.dart';
-import 'dart:ui' show lerpDouble, ImageFilter;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../models/numerical_method.dart';
 import './bisection_method_screen.dart';
+import './cramer_method_screen.dart';
 import './false_position_method_screen.dart';
-import './simple_fixed_point_method_screen.dart';
+import './gauss_elimination_method_screen.dart';
+import './gauss_jordan_method_screen.dart';
+import './lu_decomposition_method_screen.dart';
 import './newton_method_screen.dart';
 import './secant_method_screen.dart';
-import './gauss_elimination_method_screen.dart';
-import './lu_decomposition_method_screen.dart';
-import './gauss_jordan_method_screen.dart';
-import './cramer_method_screen.dart';
-import 'dart:math' as math;
-import 'dart:async';
+import './simple_fixed_point_method_screen.dart';
 // Import for timeline access
 
 // High-performance scroll physics with minimal overhead

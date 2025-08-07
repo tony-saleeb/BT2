@@ -5,10 +5,8 @@ import 'dart:math' as math;
 import 'dart:convert';
 import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
 import '../models/lu_decomposition_method.dart';
 import './lu_decomposition_solution_screen.dart';
-import 'package:flutter/rendering.dart';
 
 // Custom painter for grid pattern background
 class GridPainter extends CustomPainter {
@@ -40,7 +38,7 @@ class GridPainter extends CustomPainter {
 
 // Custom text editing controller to ensure backspace works properly
 class MatrixInputController extends TextEditingController {
-  MatrixInputController({String? text}) : super(text: text);
+  MatrixInputController({super.text});
 
   @override
   set value(TextEditingValue newValue) {
@@ -50,7 +48,7 @@ class MatrixInputController extends TextEditingController {
 }
 
 class LUDecompositionMethodScreen extends StatefulWidget {
-  const LUDecompositionMethodScreen({Key? key}) : super(key: key);
+  const LUDecompositionMethodScreen({super.key});
 
   @override
   State<LUDecompositionMethodScreen> createState() => _LUDecompositionMethodScreenState();
@@ -102,14 +100,14 @@ class _LUDecompositionMethodScreenState extends State<LUDecompositionMethodScree
     _fadeInAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Interval(0.0, 0.6, curve: Curves.easeOut),
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
       ),
     );
     
     _slideAnimation = Tween<double>(begin: 40.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Interval(0.0, 0.6, curve: Curves.easeOut),
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
       ),
     );
     
@@ -406,7 +404,7 @@ class _LUDecompositionMethodScreenState extends State<LUDecompositionMethodScree
               // Make the content scrollable to avoid overflow
               Flexible(
                 child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -812,7 +810,7 @@ class _LUDecompositionMethodScreenState extends State<LUDecompositionMethodScree
                     fontSize: 16.sp,
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 // History button
                 IconButton(
                   onPressed: _showMatrixHistory,
@@ -965,7 +963,7 @@ class _LUDecompositionMethodScreenState extends State<LUDecompositionMethodScree
                           SizedBox(width: 8.w),
                           
                           // Constant input
-                          Container(
+                          SizedBox(
                             width: 60.w,
                             child: _buildMatrixField(
                               controller: _constantControllers[i],
@@ -1475,9 +1473,9 @@ class _LUDecompositionMethodScreenState extends State<LUDecompositionMethodScree
                             fontSize: 18.sp,
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
-                          icon: Icon(Icons.close),
+                          icon: const Icon(Icons.close),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
@@ -1579,7 +1577,7 @@ class _LUDecompositionMethodScreenState extends State<LUDecompositionMethodScree
                                               size: 20.w,
                                             ),
                                             SizedBox(width: 12.w),
-                                            Text('Swipe left to delete this matrix'),
+                                            const Text('Swipe left to delete this matrix'),
                                           ],
                                         ),
                                         behavior: SnackBarBehavior.floating,
@@ -1622,7 +1620,7 @@ class _LUDecompositionMethodScreenState extends State<LUDecompositionMethodScree
                                                 fontSize: 12.sp,
                                               ),
                                             ),
-                                            Spacer(),
+                                            const Spacer(),
                                             Row(
                                               children: [
                                                 Icon(
@@ -1665,7 +1663,7 @@ class _LUDecompositionMethodScreenState extends State<LUDecompositionMethodScree
                                                           borderRadius: BorderRadius.circular(4.r),
                                                         ),
                                                         child: Text(
-                                                          '${_formatNumber(historyItem['coefficients'][i][j])}',
+                                                          _formatNumber(historyItem['coefficients'][i][j]),
                                                           style: TextStyle(
                                                             fontSize: 12.sp,
                                                             color: colorScheme.onSurface,
@@ -1696,7 +1694,7 @@ class _LUDecompositionMethodScreenState extends State<LUDecompositionMethodScree
                                                         borderRadius: BorderRadius.circular(4.r),
                                                       ),
                                                       child: Text(
-                                                        '${_formatNumber(historyItem['constants'][i])}',
+                                                        _formatNumber(historyItem['constants'][i]),
                                                         style: TextStyle(
                                                           fontSize: 12.sp,
                                                           color: colorScheme.tertiary,
@@ -1947,7 +1945,7 @@ class _LUDecompositionMethodScreenState extends State<LUDecompositionMethodScree
                                                         borderRadius: BorderRadius.circular(3.r),
                                                       ),
                                                       child: Text(
-                                                        '${_formatNumber(historyItem['coefficients'][i][j])}',
+                                                        _formatNumber(historyItem['coefficients'][i][j]),
                                                         style: TextStyle(
                                                           fontSize: 9.sp,
                                                           color: Colors.white.withOpacity(0.9),
@@ -1980,7 +1978,7 @@ class _LUDecompositionMethodScreenState extends State<LUDecompositionMethodScree
                                                       borderRadius: BorderRadius.circular(3.r),
                                                     ),
                                                     child: Text(
-                                                      '${_formatNumber(historyItem['constants'][i])}',
+                                                      _formatNumber(historyItem['constants'][i]),
                                                       style: TextStyle(
                                                         fontSize: 9.sp,
                                                         color: Colors.white,
@@ -2108,19 +2106,6 @@ class _LUDecompositionMethodScreenState extends State<LUDecompositionMethodScree
   }
 
   // Helper to check if at least one field has a value
-  bool _hasAnyValue() {
-    for (int i = 0; i < _rows; i++) {
-      for (int j = 0; j < _cols; j++) {
-        if (_coefficientControllers[i][j].text.isNotEmpty) {
-          return true;
-        }
-      }
-      if (_constantControllers[i].text.isNotEmpty) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   // Save current matrix to history
   void _saveCurrentMatrixToHistory() {

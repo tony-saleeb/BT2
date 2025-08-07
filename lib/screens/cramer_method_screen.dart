@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +9,6 @@ import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/cramer_method.dart';
 import './cramer_solution_screen.dart';
-import 'package:flutter/rendering.dart';
 
 // Custom painter for grid pattern background
 class GridPainter extends CustomPainter {
@@ -39,7 +40,7 @@ class GridPainter extends CustomPainter {
 
 // Custom text editing controller to ensure backspace works properly
 class MatrixInputController extends TextEditingController {
-  MatrixInputController({String? text}) : super(text: text);
+  MatrixInputController({super.text});
 
   @override
   set value(TextEditingValue newValue) {
@@ -49,7 +50,7 @@ class MatrixInputController extends TextEditingController {
 }
 
 class CramerMethodScreen extends StatefulWidget {
-  const CramerMethodScreen({Key? key}) : super(key: key);
+  const CramerMethodScreen({super.key});
 
   @override
   State<CramerMethodScreen> createState() => _CramerMethodScreenState();
@@ -812,7 +813,7 @@ class _CramerMethodScreenState extends State<CramerMethodScreen> with SingleTick
                     fontSize: 16.sp,
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 // History button
                 IconButton(
                   onPressed: _showMatrixHistory,
@@ -965,7 +966,7 @@ class _CramerMethodScreenState extends State<CramerMethodScreen> with SingleTick
                           SizedBox(width: 8.w),
                           
                           // Constant input
-                          Container(
+                          SizedBox(
                             width: 60.w,
                             child: _buildMatrixField(
                               controller: _constantControllers[i],
@@ -1318,9 +1319,9 @@ class _CramerMethodScreenState extends State<CramerMethodScreen> with SingleTick
                             fontSize: 18.sp,
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
-                          icon: Icon(Icons.close),
+                          icon: const Icon(Icons.close),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
@@ -1440,7 +1441,7 @@ class _CramerMethodScreenState extends State<CramerMethodScreen> with SingleTick
                                                 size: 20.w,
                                               ),
                                               SizedBox(width: 12.w),
-                                              Text('Swipe left to delete this matrix'),
+                                              const Text('Swipe left to delete this matrix'),
                                             ],
                                           ),
                                           behavior: SnackBarBehavior.floating,
@@ -1475,7 +1476,7 @@ class _CramerMethodScreenState extends State<CramerMethodScreen> with SingleTick
                                                   fontSize: 12.sp,
                                                 ),
                                               ),
-                                              Spacer(),
+                                              const Spacer(),
                                               Row(
                                                 children: [
                                                   Icon(
@@ -1528,7 +1529,7 @@ class _CramerMethodScreenState extends State<CramerMethodScreen> with SingleTick
                                                               borderRadius: BorderRadius.circular(4.r),
                                                             ),
                                                             child: Text(
-                                                              '${_formatNumber(matrixData['coefficients'][i][j])}',
+                                                              _formatNumber(matrixData['coefficients'][i][j]),
                                                               style: TextStyle(
                                                                 fontSize: 12.sp,
                                                                 color: colorScheme.onSurface,
@@ -1558,7 +1559,7 @@ class _CramerMethodScreenState extends State<CramerMethodScreen> with SingleTick
                                                             borderRadius: BorderRadius.circular(4.r),
                                                           ),
                                                           child: Text(
-                                                            '${_formatNumber(matrixData['constants'][i])}',
+                                                            _formatNumber(matrixData['constants'][i]),
                                                             style: TextStyle(
                                                               fontSize: 12.sp,
                                                               color: colorScheme.tertiary,
@@ -1665,7 +1666,7 @@ class _CramerMethodScreenState extends State<CramerMethodScreen> with SingleTick
               // Make the content scrollable to avoid overflow
               Flexible(
                 child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -1824,7 +1825,6 @@ class _CramerMethodScreenState extends State<CramerMethodScreen> with SingleTick
     return await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
-        final colorScheme = Theme.of(context).colorScheme;
         return Dialog(
           backgroundColor: Colors.transparent,
           insetPadding: EdgeInsets.zero,
@@ -2036,7 +2036,7 @@ class _CramerMethodScreenState extends State<CramerMethodScreen> with SingleTick
                                                         borderRadius: BorderRadius.circular(3.r),
                                                       ),
                                                       child: Text(
-                                                        '${_formatNumber(historyItem['coefficients'][i][j])}',
+                                                        _formatNumber(historyItem['coefficients'][i][j]),
                                                         style: TextStyle(
                                                           fontSize: 9.sp,
                                                           color: Colors.white.withOpacity(0.9),
@@ -2067,7 +2067,7 @@ class _CramerMethodScreenState extends State<CramerMethodScreen> with SingleTick
                                                       borderRadius: BorderRadius.circular(3.r),
                                                     ),
                                                     child: Text(
-                                                      '${_formatNumber(historyItem['constants'][i])}',
+                                                      _formatNumber(historyItem['constants'][i]),
                                                       style: TextStyle(
                                                         fontSize: 9.sp,
                                                         color: Colors.white,

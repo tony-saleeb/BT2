@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:math' as math;
 
 class CramerSolutionScreen extends StatefulWidget {
   final List<List<double>> coefficients;
@@ -11,13 +9,13 @@ class CramerSolutionScreen extends StatefulWidget {
   final List<String> steps;
 
   const CramerSolutionScreen({
-    Key? key,
+    super.key,
     required this.coefficients,
     required this.constants,
     required this.solution,
     required this.determinants,
     required this.steps,
-  }) : super(key: key);
+  });
 
   @override
   State<CramerSolutionScreen> createState() => _CramerSolutionScreenState();
@@ -41,6 +39,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
         super.setState(fn);
       } catch (e) {
         // Silently ignore state errors after disposal
+        // ignore: avoid_print
         print('Ignoring setState error: $e');
       }
     }
@@ -74,13 +73,13 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return Scaffold(
-      backgroundColor: isDark ? colorScheme.background : Color(0xFFF8F9FF),
+      backgroundColor: isDark ? colorScheme.background : const Color(0xFFF8F9FF),
       appBar: AppBar(
         title: ShaderMask(
           shaderCallback: (bounds) => LinearGradient(
             colors: [colorScheme.primary, colorScheme.tertiary],
           ).createShader(bounds),
-          child: Text(
+          child: const Text(
             'SOLUTION',
             style: TextStyle(
               fontWeight: FontWeight.w800,
@@ -106,7 +105,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
               });
             },
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
         ],
       ),
       body: SafeArea(
@@ -120,12 +119,12 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
             ),
             // Main content
             ListView(
-              padding: EdgeInsets.only(bottom: 24),
+              padding: const EdgeInsets.only(bottom: 24),
               physics: const BouncingScrollPhysics(),
               children: [
                 // Main content container
                 Container(
-                  margin: EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  margin: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                   decoration: BoxDecoration(
                     color: isDark ? colorScheme.surface : Colors.white,
                     borderRadius: BorderRadius.circular(16),
@@ -133,7 +132,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                       BoxShadow(
                         color: Colors.black.withOpacity(0.07),
                         blurRadius: 12,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                         spreadRadius: 1,
                       ),
                     ],
@@ -149,11 +148,11 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                     children: [
                       // Header Section
                       Padding(
-                        padding: EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(20),
                         child: Row(
                           children: [
                             Container(
-                              padding: EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
@@ -168,7 +167,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                                   BoxShadow(
                                     color: colorScheme.primary.withOpacity(0.15),
                                     blurRadius: 5,
-                                    offset: Offset(0, 2),
+                                    offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
@@ -178,7 +177,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                                 size: 24,
                               ),
                             ),
-                            SizedBox(width: 16),
+                            const SizedBox(width: 16),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,7 +191,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                                       letterSpacing: 1,
                                     ),
                                   ),
-                                  SizedBox(height: 4),
+                                  const SizedBox(height: 4),
                                   Text(
                                     'Using Cramer\'s Rule with determinants',
                                     style: TextStyle(
@@ -251,9 +250,9 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
         children: [
           // Section title
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 16, 20, 12),
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -279,7 +278,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
           
           // Section content
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
             child: content,
           ),
         ],
@@ -308,7 +307,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
           BoxShadow(
             color: colorScheme.shadow.withOpacity(0.05),
             blurRadius: 4,
-            offset: Offset(0, 1),
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -316,7 +315,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
         children: [
           // Matrix A and its determinant
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -327,7 +326,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                     children: [
                       // Label
                       Padding(
-                        padding: EdgeInsets.only(left: 4, bottom: 8),
+                        padding: const EdgeInsets.only(left: 4, bottom: 8),
                         child: Text(
                           'Matrix A',
                           style: TextStyle(
@@ -354,11 +353,11 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                             BoxShadow(
                               color: colorScheme.shadow.withOpacity(0.05),
                               blurRadius: 3,
-                              offset: Offset(0, 1),
+                              offset: const Offset(0, 1),
                             ),
                           ],
                         ),
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         child: Column(
                           children: [
                             for (int i = 0; i < widget.coefficients.length; i++)
@@ -370,8 +369,8 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                                     for (int j = 0; j < widget.coefficients[i].length; j++)
                                       Container(
                                         width: 44,
-                                        padding: EdgeInsets.symmetric(vertical: 4),
-                                        margin: EdgeInsets.symmetric(horizontal: 2),
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        margin: const EdgeInsets.symmetric(horizontal: 2),
                                         child: Text(
                                           _formatNumber(widget.coefficients[i][j]),
                                           style: TextStyle(
@@ -395,7 +394,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                 
                 // Determinant
                 Container(
-                  padding: EdgeInsets.only(left: 16),
+                  padding: const EdgeInsets.only(left: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -407,9 +406,9 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                           color: colorScheme.primary,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
                           color: colorScheme.primary.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(8),
@@ -440,8 +439,8 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
       children: [
         // Final solution values with expanded information
         Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.all(20),
+          margin: const EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -456,7 +455,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
               BoxShadow(
                 color: colorScheme.shadow.withOpacity(0.1),
                 blurRadius: 8,
-                offset: Offset(0, 3),
+                offset: const Offset(0, 3),
               ),
             ],
             border: Border.all(
@@ -469,11 +468,11 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
             children: [
               // Solution header
               Padding(
-                padding: EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.only(bottom: 16),
                 child: Row(
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: colorScheme.tertiary.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(20),
@@ -488,10 +487,10 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                         ),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     // Solution formula
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: colorScheme.secondary.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
@@ -562,7 +561,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
               BoxShadow(
                 color: colorScheme.shadow.withOpacity(0.07),
                 blurRadius: 4,
-                offset: Offset(0, 2),
+                offset: const Offset(0, 2),
               ),
             ],
             border: Border.all(
@@ -573,9 +572,9 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
                   decoration: BoxDecoration(
                     color: colorScheme.secondary.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(20),
@@ -603,8 +602,8 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
               // Matrices with replaced columns
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                physics: BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                physics: const BouncingScrollPhysics(),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -619,7 +618,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                         isDark,
                       ),
                       if (i < widget.solution.length - 1)
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                     ],
                   ],
                 ),
@@ -655,7 +654,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
           BoxShadow(
             color: colorScheme.shadow.withOpacity(0.08),
             blurRadius: 4,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
             spreadRadius: 0.5,
           ),
         ],
@@ -665,7 +664,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
           // Header
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
@@ -675,7 +674,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(9),
                 topRight: Radius.circular(9),
               ),
@@ -683,7 +682,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                 BoxShadow(
                   color: colorScheme.shadow.withOpacity(0.05),
                   blurRadius: 2,
-                  offset: Offset(0, 1),
+                  offset: const Offset(0, 1),
                 ),
               ],
             ),
@@ -713,7 +712,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
           
           // Matrix content
           Padding(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             child: Column(
               children: [
                 for (int i = 0; i < matrix.length; i++)
@@ -725,8 +724,8 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                         for (int j = 0; j < matrix[i].length; j++)
                           Container(
                             width: 44,
-                            padding: EdgeInsets.symmetric(vertical: 4),
-                            margin: EdgeInsets.symmetric(horizontal: 2),
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            margin: const EdgeInsets.symmetric(horizontal: 2),
                             decoration: BoxDecoration(
                               color: replacedColumn == j
                                   ? colorScheme.tertiary.withOpacity(0.25)
@@ -762,7 +761,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
           // Determinant
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
@@ -772,7 +771,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(9),
                 bottomRight: Radius.circular(9),
               ),
@@ -790,7 +789,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: colorScheme.primary.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(4),
@@ -816,22 +815,22 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
   Widget _buildSolutionValue(String name, double value, ColorScheme colorScheme) {
     return Container(
       width: 90,
-      padding: EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: name == 'x1' 
               ? [
-                  Color(0xFFE1EFFF),
-                  Color(0xFFD6E8FF),
+                  const Color(0xFFE1EFFF),
+                  const Color(0xFFD6E8FF),
                 ]
               : name == 'x2'
                   ? [
-                      Color(0xFFE6E0FF),
-                      Color(0xFFDDD5FF),
+                      const Color(0xFFE6E0FF),
+                      const Color(0xFFDDD5FF),
                     ]
                   : [
-                      Color(0xFFFFE0D6),
-                      Color(0xFFFFD5C8),
+                      const Color(0xFFFFE0D6),
+                      const Color(0xFFFFD5C8),
                     ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -845,7 +844,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
                     ? colorScheme.secondary.withOpacity(0.2)
                     : colorScheme.tertiary.withOpacity(0.2),
             blurRadius: 6,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
             spreadRadius: 0.5,
           ),
         ],
@@ -864,7 +863,7 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
           Container(
             width: 30,
             height: 3,
-            margin: EdgeInsets.only(bottom: 6),
+            margin: const EdgeInsets.only(bottom: 6),
             decoration: BoxDecoration(
               color: name == 'x1'
                   ? colorScheme.primary
@@ -880,15 +879,15 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: name == 'x1'
-                  ? Color(0xFF0D47A1)
+                  ? const Color(0xFF0D47A1)
                   : name == 'x2'
-                      ? Color(0xFF4A148C)
-                      : Color(0xFFBF360C),
+                      ? const Color(0xFF4A148C)
+                      : const Color(0xFFBF360C),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
               color: name == 'x1'
                   ? colorScheme.primary.withOpacity(0.12)
@@ -934,20 +933,4 @@ class _CramerSolutionScreenState extends State<CramerSolutionScreen> {
     return result;
   }
 
-  String _buildEquationString(int row) {
-    StringBuffer equation = StringBuffer();
-    
-    for (int j = 0; j < widget.coefficients[row].length; j++) {
-      double coefficient = widget.coefficients[row][j];
-      if (j > 0) {
-        equation.write(coefficient >= 0 ? ' + ' : ' - ');
-        equation.write('${coefficient.abs().toStringAsFixed(2)}x${j + 1}');
-      } else {
-        equation.write('${coefficient.toStringAsFixed(2)}x${j + 1}');
-      }
-    }
-    
-    equation.write(' = ${widget.constants[row].toStringAsFixed(2)}');
-    return equation.toString();
-  }
 } 
