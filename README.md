@@ -53,7 +53,7 @@ The application is designed to:
 4. Serve as a practical tool for solving numerical problems
 
 
-App Screenshots
+ ##App Screenshots
 <p align="center">
 <b>🌞 Light Theme</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>🌙 Dark Theme</b>
 <br>
