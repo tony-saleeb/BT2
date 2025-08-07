@@ -57,23 +57,27 @@ The application is designed to:
 A quick look at the app's clean UI in both light and dark themes.
 
 <div align="center">
-  <br>
-  
-  | Light Theme 🌞 | Dark Theme 🌙 |
-  | :---: | :---: |
-  | <img src="screenshots/1.png" width="200" alt="Root Finding Method - Light Theme"/> | <img src="screenshots/11.png" width="200" alt="Root Finding Method - Dark Theme"/> |
-  | **Root Finding Method** | **Root Finding Method** |
-  | <img src="screenshots/2.png" width="200" alt="Gauss Elimination Method - Light Theme"/> | <img src="screenshots/22.png" width="200" alt="Gauss Elimination Method - Dark Theme"/> |
-  | **Gauss Elimination Method** | **Gauss Elimination Method** |
-  | <img src="screenshots/3.png" width="200" alt="LU Decomposition Method - Light Theme"/> | <img src="screenshots/33.png" width="200" alt="LU Decomposition Method - Dark Theme"/> |
-  | **LU Decomposition Method** | **LU Decomposition Method** |
-  | <img src="screenshots/4.png" width="200" alt="Gauss Jordan Method - Light Theme"/> | <img src="screenshots/44.png" width="200" alt="Gauss Jordan Method - Dark Theme"/> |
-  | **Gauss-Jordan Method** | **Gauss-Jordan Method** |
-  | <img src="screenshots/5.png" width="200" alt="Cramer's Rule - Light Theme"/> | <img src="screenshots/55.png" width="200" alt="Cramer's Rule - Dark Theme"/> |
-  | **Cramer's Rule** | **Cramer's Rule** |
-  | <img src="screenshots/6.png" width="200" alt="Settings Page - Light Theme"/> | <img src="screenshots/66.png" width="200" alt="Settings Page - Dark Theme"/> |
-  | **Settings Page** | **Settings Page** |
+<h4>🌞 Light Theme</h4>
+<p>
+<img src="screenshots/1.png" width="250">
+<img src="screenshots/2.png" width="250">
+<img src="screenshots/3.png" width="250">
+<br>
+<img src="screenshots/4.png" width="250">
+<img src="screenshots/5.png" width="250">
+<img src="screenshots/6.png" width="250">
+</p>
 
+<h4>🌙 Dark Theme</h4>
+<p>
+<img src="screenshots/11.png" width="250">
+<img src="screenshots/22.png" width="250">
+<img src="screenshots/33.png" width="250">
+<br>
+<img src="screenshots/44.png" width="250">
+<img src="screenshots/55.png" width="250">
+<img src="screenshots/66.png" width="250">
+</p>
 </div>
 
 
