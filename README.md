@@ -57,7 +57,7 @@ The application is designed to:
 A quick look at the app's clean UI in both light and dark themes.
 
 <div align="center">
-<h4>🌞 Light Theme</h4>
+<h4>🌙 Dark Theme</h4>
 <p>
 <img src="screenshots/1.png" width="250">
 <img src="screenshots/2.png" width="250">
@@ -68,7 +68,7 @@ A quick look at the app's clean UI in both light and dark themes.
 <img src="screenshots/6.png" width="250">
 </p>
 
-<h4>🌙 Dark Theme</h4>
+<h4>🌞 Light Theme</h4>
 <p>
 <img src="screenshots/11.png" width="250">
 <img src="screenshots/22.png" width="250">
