@@ -52,6 +52,17 @@ The application is designed to:
 3. Provide detailed breakdowns of solution steps for educational purposes
 4. Serve as a practical tool for solving numerical problems
 
+
+| Light Theme | Dark Theme |
+| :---: | :---: |
+| <img src="screenshots/1.png" width="400"> | <img src="screenshots/11.png" width="400"> |
+| <img src="screenshots/2.png" width="400"> | <img src="screenshots/22.png" width="400"> |
+| <img src="screenshots/3.png" width="400"> | <img src="screenshots/33.png" width="400"> |
+| <img src="screenshots/4.png" width="400"> | <img src="screenshots/44.png" width="400"> |
+| <img src="screenshots/5.png" width="400"> | <img src="screenshots/55.png" width="400"> |
+| <img src="screenshots/6.png" width="400"> | <img src="screenshots/66.png" width="400"> |
+
+
 ## Getting Started with Development
 
 This project is built with Flutter. To get started:
