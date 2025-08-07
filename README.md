@@ -38,6 +38,12 @@ A comprehensive Flutter mobile application focused on numerical analysis methods
    - Smooth animations and transitions
    - Interactive elements for better learning experience
 
+## Download & Test the App
+
+You can download and test the latest major APK release here:
+
+[Download APK v1.0.0](https://github.com/tony-saleeb/BT2/releases/download/v1.0.0/BT2.apk)
+
 ## Educational Value
 
 The application is designed to:
