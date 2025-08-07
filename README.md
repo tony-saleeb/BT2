@@ -52,8 +52,8 @@ The application is designed to:
 3. Provide detailed breakdowns of solution steps for educational purposes
 4. Serve as a practical tool for solving numerical problems
 
+## App screenshots
 
- ##App Screenshots
 <p align="center">
 <b>🌞 Light Theme</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>🌙 Dark Theme</b>
 <br>
