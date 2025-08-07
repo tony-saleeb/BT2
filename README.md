@@ -52,7 +52,7 @@ The application is designed to:
 3. Provide detailed breakdowns of solution steps for educational purposes
 4. Serve as a practical tool for solving numerical problems
 
-### App Screenshots
+## App Screenshots
 
 A quick look at the app's clean UI in both light and dark themes.
 
