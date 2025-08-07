@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/bt2.svg" alt="Numerical Analysis App Logo" width="300">
+  <img src="assets/bt2.svg" alt="Numerical Analysis App Logo" width="350">
 </div>
 
 # Numerical Analysis App
