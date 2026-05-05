@@ -29,11 +29,14 @@ jobs:
 
       - name: Build iOS App with xcodebuild
         run: |
-          # 1. Let Flutter generate the necessary config files and install pods
-          flutter build ios --release --config-only || true
+          # 1. Let Flutter generate the necessary config files
+          flutter build ios --release --config-only
           
-          # 2. Run xcodebuild directly to completely bypass Flutter's signing validation
+          # 2. Ensure pods are installed
           cd ios
+          pod install --repo-update
+          
+          # 3. Run xcodebuild directly to completely bypass Flutter's signing validation
           xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination "generic/platform=iOS" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
           
       - name: Package Unsigned IPA
