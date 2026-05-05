@@ -27,6 +27,13 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Disable Xcode Codesigning
+        run: |
+          echo "CODE_SIGNING_ALLOWED=NO" >> ios/Flutter/Release.xcconfig
+          echo "CODE_SIGNING_REQUIRED=NO" >> ios/Flutter/Release.xcconfig
+          echo "CODE_SIGN_IDENTITY=-" >> ios/Flutter/Release.xcconfig
+          echo "EXPANDED_CODE_SIGN_IDENTITY=-" >> ios/Flutter/Release.xcconfig
+          
       - name: Build iOS App (No Codesign)
         run: flutter build ios --release --no-codesign
 
