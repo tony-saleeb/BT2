@@ -4,11 +4,12 @@ on:
   workflow_dispatch: # Allows manual trigger
   push:
     branches:
-      - main
+      - master
     paths:
       - 'lib/**'
       - 'ios/**'
       - 'pubspec.yaml'
+      - '.github/workflows/**'
 
 jobs:
   build-ios:
