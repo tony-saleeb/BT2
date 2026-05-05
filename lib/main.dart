@@ -54,7 +54,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         outline: const Color(0xFFCBD5E1),
       ),
       textTheme: GoogleFonts.spaceGroteskTextTheme(),
-      cardTheme: const CardTheme(
+      cardTheme: const CardThemeData(
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
