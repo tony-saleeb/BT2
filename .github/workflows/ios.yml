@@ -27,20 +27,14 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Disable Xcode Codesigning
-        run: |
-          echo "CODE_SIGNING_ALLOWED=NO" >> ios/Flutter/Release.xcconfig
-          echo "CODE_SIGNING_REQUIRED=NO" >> ios/Flutter/Release.xcconfig
-          echo "CODE_SIGN_IDENTITY=-" >> ios/Flutter/Release.xcconfig
-          echo "EXPANDED_CODE_SIGN_IDENTITY=-" >> ios/Flutter/Release.xcconfig
-          
-      - name: Build iOS App (No Codesign)
-        run: flutter build ios --release --no-codesign
+      - name: Build iOS Archive
+        run: flutter build ipa --release --no-codesign
 
-      - name: Package IPA
+      - name: Package Unsigned IPA
         run: |
           mkdir -p Payload
-          mv build/ios/iphoneos/Runner.app Payload/
+          # The .app is located inside the generated .xcarchive
+          mv build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app Payload/
           zip -r numerical.ipa Payload
           
       - name: Upload IPA Artifact
