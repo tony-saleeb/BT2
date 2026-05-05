@@ -29,8 +29,8 @@ jobs:
 
       - name: Build iOS App with xcodebuild
         run: |
-          # 1. Let Flutter generate the necessary config files
-          flutter build ios --release --config-only
+          # 1. Let Flutter generate the necessary config files using simulator target to bypass signing checks
+          flutter build ios --simulator --release --config-only
           
           # 2. Ensure pods are installed
           cd ios
