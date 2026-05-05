@@ -104,7 +104,6 @@ flutter_launcher_icons:
   ios: true
   image_path: "assets/bt2.png"
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/bt2_foreground.png"
   min_sdk_android: 21
   remove_alpha_ios: true
   web:
