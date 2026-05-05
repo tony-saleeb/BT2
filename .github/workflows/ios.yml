@@ -27,14 +27,20 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build iOS Archive
-        run: flutter build ipa --release --no-codesign
-
+      - name: Build iOS App with xcodebuild
+        run: |
+          # 1. Let Flutter generate the necessary config files and install pods
+          flutter build ios --release --config-only || true
+          
+          # 2. Run xcodebuild directly to completely bypass Flutter's signing validation
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination "generic/platform=iOS" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
+          
       - name: Package Unsigned IPA
         run: |
           mkdir -p Payload
-          # The .app is located inside the generated .xcarchive
-          mv build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app Payload/
+          # The raw xcodebuild puts the app in the DerivedData or local build folder
+          mv build/ios/iphoneos/Runner.app Payload/ || mv ios/build/Release-iphoneos/Runner.app Payload/
           zip -r numerical.ipa Payload
           
       - name: Upload IPA Artifact
